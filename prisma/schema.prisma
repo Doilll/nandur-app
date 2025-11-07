@@ -14,19 +14,18 @@ model User {
   bio           String?
   numberPhone   String?
   lokasi        String?
-  password      String?
+  proyekTani    ProyekTani[]
+  feeds         Feed[]
+  comments      Comment[]
+  likes         Like[]
   role          Role?        @default(PETANI)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @default(now()) @updatedAt
   name          String
-  emailVerified DateTime?
+  emailVerified Boolean      @default(false)
   image         String?
-  comments      Comment[]
-  feeds         Feed[]
-  likes         Like[]
-  proyekTani    ProyekTani[]
-  accounts      Account[]
   sessions      Session[]
+  accounts      Account[]
 
   @@map("user")
 }
@@ -38,12 +37,12 @@ model ProyekTani {
   petaniId   String
   lokasi     String
   status     ProyekStatus @default(PERSIAPAN)
+  petani     User         @relation(fields: [petaniId], references: [id], onDelete: Cascade)
+  faseProyek FaseProyek[]
+  produk     Produk[]
+  feeds      Feed[]
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
-  faseProyek FaseProyek[]
-  feeds      Feed[]
-  produk     Produk[]
-  petani     User         @relation(fields: [petaniId], references: [id], onDelete: Cascade)
 
   @@index([petaniId])
 }
@@ -56,9 +55,9 @@ model FaseProyek {
   gambarFase   String[]
   urutanFase   Int
   status       FaseStatus @default(BELUM_DIMULAI)
+  proyekTani   ProyekTani @relation(fields: [proyekTaniId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  proyekTani   ProyekTani @relation(fields: [proyekTaniId], references: [id], onDelete: Cascade)
 
   @@index([proyekTaniId])
 }
@@ -71,10 +70,12 @@ model Produk {
   stok         Int
   gambarProduk String[]
   proyekTaniId String
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
   proyekTani   ProyekTani @relation(fields: [proyekTaniId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // biar nanti bisa sort produk cepat
   @@index([proyekTaniId])
   @@index([createdAt])
   @@index([harga])
@@ -86,11 +87,11 @@ model Feed {
   authorId  String
   imageFeed String[]
   projectId String?
-  createdAt DateTime    @default(now())
-  comments  Comment[]
+  project   ProyekTani? @relation(fields: [projectId], references: [id], onDelete: SetNull)
   author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  project   ProyekTani? @relation(fields: [projectId], references: [id])
+  comments  Comment[]
   likes     Like[]
+  createdAt DateTime    @default(now())
 
   @@index([authorId])
   @@index([projectId])
@@ -102,9 +103,9 @@ model Comment {
   content   String
   authorId  String
   feedId    String
-  createdAt DateTime @default(now())
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   feed      Feed     @relation(fields: [feedId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 
   @@index([feedId])
   @@index([authorId])
@@ -114,47 +115,59 @@ model Like {
   id        String   @id @default(cuid())
   userId    String
   feedId    String
-  createdAt DateTime @default(now())
   feed      Feed     @relation(fields: [feedId], references: [id], onDelete: Cascade)
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 
+  // cegah like duplikat
   @@unique([userId, feedId])
   @@index([feedId])
   @@index([userId])
 }
 
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-}
-
 model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
-  @@unique([identifier, token])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@map("verification")
 }
 
 enum Role {
