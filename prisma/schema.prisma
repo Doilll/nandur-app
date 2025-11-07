@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(cuid())
+  username      String?      @unique
+  email         String       @unique
+  bio           String?
+  numberPhone   String?
+  lokasi        String?
+  password      String?
+  role          Role?        @default(PETANI)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
+  name          String
+  emailVerified DateTime?
+  image         String?
+  comments      Comment[]
+  feeds         Feed[]
+  likes         Like[]
+  proyekTani    ProyekTani[]
+  accounts      Account[]
+  sessions      Session[]
+
+  @@map("user")
+}
+
+model ProyekTani {
+  id         String       @id @default(cuid())
+  namaProyek String
+  deskripsi  String
+  petaniId   String
+  lokasi     String
+  status     ProyekStatus @default(PERSIAPAN)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  faseProyek FaseProyek[]
+  feeds      Feed[]
+  produk     Produk[]
+  petani     User         @relation(fields: [petaniId], references: [id], onDelete: Cascade)
+
+  @@index([petaniId])
+}
+
+model FaseProyek {
+  id           String     @id @default(cuid())
+  namaFase     String
+  deskripsi    String
+  proyekTaniId String
+  gambarFase   String[]
+  urutanFase   Int
+  status       FaseStatus @default(BELUM_DIMULAI)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  proyekTani   ProyekTani @relation(fields: [proyekTaniId], references: [id], onDelete: Cascade)
+
+  @@index([proyekTaniId])
+}
+
+model Produk {
+  id           String     @id @default(cuid())
+  namaProduk   String
+  deskripsi    String
+  harga        Float
+  stok         Int
+  gambarProduk String[]
+  proyekTaniId String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  proyekTani   ProyekTani @relation(fields: [proyekTaniId], references: [id], onDelete: Cascade)
+
+  @@index([proyekTaniId])
+  @@index([createdAt])
+  @@index([harga])
+}
+
+model Feed {
+  id        String      @id @default(cuid())
+  content   String
+  authorId  String
+  imageFeed String[]
+  projectId String?
+  createdAt DateTime    @default(now())
+  comments  Comment[]
+  author    User        @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  project   ProyekTani? @relation(fields: [projectId], references: [id])
+  likes     Like[]
+
+  @@index([authorId])
+  @@index([projectId])
+  @@index([authorId, createdAt])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  feedId    String
+  createdAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  feed      Feed     @relation(fields: [feedId], references: [id], onDelete: Cascade)
+
+  @@index([feedId])
+  @@index([authorId])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  feedId    String
+  createdAt DateTime @default(now())
+  feed      Feed     @relation(fields: [feedId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, feedId])
+  @@index([feedId])
+  @@index([userId])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+enum Role {
+  PETANI
+  PEMBELI
+  ADMIN
+}
+
+enum ProyekStatus {
+  PERSIAPAN
+  PENANAMAN
+  PEMELIHARAAN
+  PANEN
+  SELESAI
+}
+
+enum FaseStatus {
+  BELUM_DIMULAI
+  BERJALAN
+  SELESAI
+}
