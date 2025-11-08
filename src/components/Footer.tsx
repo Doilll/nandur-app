@@ -20,7 +20,7 @@ export default function Footer() {
                   className="rounded-full"
                 />
               </div>
-              <span className="text-xl font-bold">Tandur</span>
+              <span className="text-xl font-bold">Nandur</span>
             </div>
             <p className="text-slate-400 max-w-md">
               Menghubungkan petani lokal dengan konsumen untuk menciptakan

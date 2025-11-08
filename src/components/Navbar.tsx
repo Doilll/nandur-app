@@ -48,8 +48,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isHomePage]);
 
-  const navTextColor =
-    pathname === "/" && !isScrolled ? "text-white" : "text-slate-900";
+  const navTextColor = "text-slate-900";
 
   const AuthButton = ({ mobile = false }: { mobile?: boolean }) => {
     if (isPending) {
@@ -202,14 +201,14 @@ export default function Navbar() {
             className="w-full text-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Sign In
+            Masuk
           </Link>
           <Link
             href="/register"
             className="w-full text-center px-4 py-2 bg-white text-green-600 border border-green-600 rounded-md hover:bg-green-50"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Register
+            Daftar Gratis
           </Link>
         </div>
       );
@@ -218,23 +217,15 @@ export default function Navbar() {
         <div className="flex items-center space-x-3 ${navTextColor}">
           <Link
             href="/login"
-            className={`px-4 py-2 rounded-4xl font-medium transition-colors ${
-              !isHomePage || isScrolled
-                ? "bg-transparent text-black border-2 hover:border-green-600"
-                : "bg-transparent bg-opacity-20 text-white hover:bg-opacity-40 border-2 border-green-600 hover:border-green-700"
-            }`}
+            className="px-4 py-2 rounded-4xl font-medium transition-colors bg-transparent bg-opacity-20 text-black hover:bg-opacity-40 border-2 border-green-600 hover:border-green-700"
           >
-            Sign In
+            Masuk
           </Link>
           <Link
             href="/register"
-            className={`px-4 py-2 rounded-full font-medium transition-colors ${
-              !isHomePage || isScrolled
-                ? "bg-black text-white hover:bg-green-600"
-                : "bg-green-600 bg-opacity-20 hover:bg-opacity-40 hover:bg-green-800 text-white"
-            }`}
+            className="px-4 py-2 rounded-full font-medium transition-colors bg-green-600 bg-opacity-20 hover:bg-opacity-40 hover:bg-green-800 text-white"
           >
-            Register
+            Daftar Gratis
           </Link>
         </div>
       );
@@ -242,14 +233,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isHomePage && !isScrolled
-          ? "bg-transparent"
-          : "bg-white/80 shadow-md backdrop-blur-sm"
-      }`}
-    >
-      <div className="w-full px-4 md:px-6 lg:px-8">
+    <nav className="border-b border-green-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center space-x-3">
             <div className="w-8 h-8 flex items-center justify-center rounded-full bg-green-100">
@@ -263,7 +248,7 @@ export default function Navbar() {
             </div>
             <span className={`text-2xl font-bold ${navTextColor}`}>Nandur</span>
           </Link>
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center justify-center space-x-8">
             <Link
               href="/tentang"
               className={`hover:text-green-600 transition-colors ${navTextColor}`}

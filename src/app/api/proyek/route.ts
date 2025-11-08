@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { namaProyek, deskripsi, lokasi } = await req.json();
+  const { namaProyek, deskripsi, lokasi, image } = await req.json();
   if (!namaProyek || !deskripsi || !lokasi) {
     return NextResponse.json(
       { error: "Nama proyek, deskripsi, dan lokasi wajib diisi" },
@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
         deskripsi,
         lokasi,
         petaniId: user.id,
+        image,
       },
     });
     return NextResponse.json(
