@@ -5,8 +5,8 @@ import {
   Users,
   TrendingUp,
   Sprout,
-  Shield,
-  Calendar,
+  Package,
+  ShoppingCart,
 } from "lucide-react";
 import Link from "next/link";
 import FeatureCard from "@/components/FeatureCard";
@@ -39,9 +39,9 @@ export default function TentangPage() {
           </h1>
 
           <p className="text-xl text-gray-900 mb-10 max-w-3xl mx-auto leading-relaxed ">
-            Nandur membantu petani modern dalam mengelola proyek pertanian,
-            berbagi progres, dan memasarkan hasil panen dalam satu platform
-            terintegrasi.
+            Ubah proses menanam jadi portofolio digital. Bagikan perjalanan
+            tanam Anda, bangun kepercayaan lewat cerita, dan pasarkan hasil
+            panen dengan integritas.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -85,7 +85,10 @@ export default function TentangPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-white px-4 sm:px-6 lg:px-8 negative margin-top">
+      <section
+        id="features"
+        className="py-20 bg-white px-4 sm:px-6 lg:px-8 negative margin-top"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -98,35 +101,25 @@ export default function TentangPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* FITUR 1: Transparansi Proyek & Portofolio */}
             <FeatureCard
-              icon={<Calendar className="h-8 w-8" />}
-              title="Manajemen Proyek"
-              description="Kelola fase tanam dari persiapan hingga panen dengan timeline yang terstruktur"
+              icon={<Package className="h-8 w-8" />} // Icon untuk produk atau paket proyek
+              title="Portofolio Proyek Transparan"
+              description="Ubah setiap fase tanam (FaseProyek) menjadi story yang indah. Bangun kepercayaan pembeli dengan bukti nyata dari lahan Anda."
             />
+
+            {/* FITUR 2: Social Feed & Komunitas */}
             <FeatureCard
               icon={<Users className="h-8 w-8" />}
-              title="Komunitas Petani"
-              description="Berbagi pengalaman dan belajar dari petani lainnya melalui feed sosial"
+              title="Agrisocial Community"
+              description="Berbagi progres proyek melalui postingan dan belajar real-time dari sesama petani dan pakar melalui fitur post, komentar, dan like"
             />
+
+            {/* FITUR 3: Pemasaran & Marketplace */}
             <FeatureCard
-              icon={<TrendingUp className="h-8 w-8" />}
-              title="Pemasaran Digital"
-              description="Pasarkan hasil panen langsung ke konsumen melalui platform"
-            />
-            <FeatureCard
-              icon={<Shield className="h-8 w-8" />}
-              title="Keamanan Data"
-              description="Data proyek dan transaksi Anda terlindungi dengan sistem keamanan terbaik"
-            />
-            <FeatureCard
-              icon={<Sprout className="h-8 w-8" />}
-              title="Monitoring Progress"
-              description="Pantau perkembangan proyek dengan update real-time dan dokumentasi visual"
-            />
-            <FeatureCard
-              icon={<Leaf className="h-8 w-8" />}
-              title="Ramah Lingkungan"
-              description="Dukung praktik pertanian berkelanjutan dengan tools yang efisien"
+              icon={<ShoppingCart className="h-8 w-8" />} // Icon untuk marketplace
+              title="Marketplace Hasil Panen"
+              description="Pasarkan hasil panen dengan harga premium. Pembeli dapat melacak asal-usul produk dari Portofolio Proyek Anda."
             />
           </div>
         </div>
@@ -139,8 +132,8 @@ export default function TentangPage() {
             Siap Mengubah Cara Bertani Anda?
           </h2>
           <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
-            Bergabung dengan ribuan petani yang sudah merasakan kemudahan
-            mengelola pertanian dengan Nandur
+            Bergabung dengan ribuan petani yang sudah merasakan Terhubung,
+            Berkembang, dan Sukses bersama Nandur.
           </p>
           <Link
             href="/register"

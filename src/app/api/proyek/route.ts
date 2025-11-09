@@ -1,9 +1,9 @@
 // src/app/api/proyek/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: Request): Promise<NextResponse> {
   const session = await auth.api.getSession({ headers: req.headers });
 
   const user = session?.user;

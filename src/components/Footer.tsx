@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer
       className="bg-slate-900 text-white"
-      style={{ fontFamily: "mona-sans" }}
+      style={{ fontFamily: "'Inter', sans-serif" }}
     >
       <div className="w-full px-4 py-12 justify-center mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

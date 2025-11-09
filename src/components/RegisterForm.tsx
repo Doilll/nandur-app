@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 
 export default function RegisterForm() {
@@ -48,7 +48,7 @@ export default function RegisterForm() {
       await authClient.signIn.social({
         provider,
         callbackURL: "/dashboard",
-        newUserCallbackURL: "/set-up-profile",
+        newUserCallbackURL: "/setup-profile",
       });
     } catch (error) {
       console.error("Error during social sign-in:", error);
@@ -67,17 +67,24 @@ export default function RegisterForm() {
           >
             Nama Lengkap
           </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            autoComplete="name"
-            required
-            value={dataForm.name}
-            onChange={(e) => setDataForm({ ...dataForm, name: e.target.value })}
-            className="block w-full pl-3 pr-3 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-            placeholder="masukkan nama lengkap Anda"
-          />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <User className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              id="name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              required
+              value={dataForm.name}
+              onChange={(e) =>
+                setDataForm({ ...dataForm, name: e.target.value })
+              }
+              className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+              placeholder="masukkan nama lengkap Anda"
+            />
+          </div>
         </div>
 
         <div>

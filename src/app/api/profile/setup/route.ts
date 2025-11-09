@@ -1,8 +1,9 @@
+// src/app/api/profile/setup/route.ts
 import { auth } from "@/lib/auth";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function POST(req: NextRequest) {
+export async function PUT(req: Request): Promise<NextResponse> {
     const session = await auth.api.getSession({ headers: req.headers });
     const user = session?.user;
 

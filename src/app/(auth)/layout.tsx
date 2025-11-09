@@ -76,7 +76,7 @@ export default async function AuthLayout({
                 Selamat Datang di Nandur
               </h1>
               <p className="text-gray-600">
-                Kelola proyek tani Anda dengan mudah
+                Tempatnya Petani Tampil
               </p>
             </div>
 
