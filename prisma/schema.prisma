@@ -18,6 +18,7 @@ model User {
   feeds         Feed[]
   comments      Comment[]
   likes         Like[]
+  produks       Produk[]
   role          Role?        @default(PETANI)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @default(now()) @updatedAt
@@ -72,6 +73,8 @@ model Produk {
   gambarProduk String[]
   proyekTaniId String
   proyekTani   ProyekTani @relation(fields: [proyekTaniId], references: [id], onDelete: Cascade)
+  petaniId     String
+  petani       User       @relation(fields: [petaniId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -80,6 +83,7 @@ model Produk {
   @@index([proyekTaniId])
   @@index([createdAt])
   @@index([harga])
+  @@index([petaniId])
 }
 
 model Feed {

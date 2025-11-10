@@ -45,10 +45,10 @@ export default function DashboardSidebar({ user }: { user: AuthUser }) {
   return (
     <>
       {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
+      <div className="lg:hidden fixed top-4 right-4 z-50">
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="p-2 rounded-lg bg-white shadow-lg border border-gray-200"
+          className="p-2 rounded-lg text-slate-800 bg-white shadow-lg border border-gray-200"
         >
           {isMobileMenuOpen ? (
             <X className="h-5 w-5" />
