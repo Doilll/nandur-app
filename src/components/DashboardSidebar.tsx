@@ -28,7 +28,7 @@ export default function DashboardSidebar({ user }: { user: AuthUser }) {
 
   const navigation = [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Proyek Tani", href: "/dashboard/projects", icon: Sprout },
+    { name: "Proyek Tani", href: "/dashboard/proyek", icon: Sprout },
     { name: "Produk", href: "/dashboard/products", icon: Package },
     { name: "Feed", href: "/dashboard/feed", icon: MessageSquare },
     { name: "Analitik", href: "/dashboard/analytics", icon: BarChart3 },

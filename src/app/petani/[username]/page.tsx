@@ -24,6 +24,8 @@ export default async function PetaniPage({
           deskripsi: true,
           status: true,
           lokasi: true,
+          createdAt: true,
+          image: true,
           faseProyek: {
             select: {
               id: true,
