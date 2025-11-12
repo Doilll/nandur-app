@@ -20,6 +20,7 @@ import {
   Users,
   Package,
   Plus,
+  Trash,
 } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -34,6 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import TambahFaseForm from "@/components/TambahFaseForm";
@@ -132,6 +134,22 @@ export default function ProjectDetailPage() {
     }
   };
 
+  const handleHapusProyek = async () => {
+    try {
+      const response = await fetch(`/api/proyek/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Gagal menghapus proyek");
+      }
+
+      router.push("/dashboard/proyek");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan");
+    }
+  };
+
   const getStatusColor = (status: string) => {
     const colors = {
       PERSIAPAN: "bg-yellow-100 text-yellow-800 border-yellow-200",
@@ -156,7 +174,7 @@ export default function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-green-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Memuat data proyek...</p>
@@ -167,7 +185,7 @@ export default function ProjectDetailPage() {
 
   if (error || !proyek) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-green-50 flex items-center justify-center">
         <div className="text-center">
           <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -197,7 +215,7 @@ export default function ProjectDetailPage() {
   const StatusIcon = getStatusIcon(proyek.status);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-green-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -296,7 +314,9 @@ export default function ProjectDetailPage() {
                           proyekId={id}
                           onSuccess={() => {
                             setOpen(false);
-                            startTransition(() => router.refresh());
+                            startTransition(() => {
+                              fetchProyek();
+                            });
                           }}
                         />
                       </div>
@@ -441,23 +461,64 @@ export default function ProjectDetailPage() {
               </h3>
               <div className="space-y-3">
                 <ActionButton
-                  href={`/dashboard/projects/${id}/fase`}
+                  href={`/dashboard/proyek/${id}/fase`}
                   icon={<PlayCircle className="h-4 w-4" />}
                   text="Kelola Fase"
                   color="blue"
                 />
                 <ActionButton
-                  href={`/dashboard/projects/${id}/update`}
+                  href={`/dashboard/proyek/${id}/update`}
                   icon={<Edit3 className="h-4 w-4" />}
                   text="Update Progress"
                   color="green"
                 />
                 <ActionButton
-                  href={`/dashboard/projects/${id}/produk`}
+                  href={`/dashboard/proyek/${id}/produk`}
                   icon={<Package className="h-4 w-4" />}
                   text="Tambah Produk"
                   color="purple"
                 />
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button className="w-full bg-red-500 text-white p-3 hover:bg-red-700 flex items-center space-x-3 rounded-lg font-medium transition-colors">
+                      <div className="p-1">
+                        <Trash className="h-4 w-4" />
+                      </div>
+                      <span className="text-sm">Hapus Proyek</span>
+                    </button>
+                  </DialogTrigger>
+
+                  <DialogContent className="max-w-sm">
+                    <DialogHeader>
+                      <DialogTitle className="text-red-600 flex items-center gap-2">
+                        <AlertCircle className="w-5 h-5" />
+                        Konfirmasi Hapus
+                      </DialogTitle>
+                    </DialogHeader>
+
+                    <p className="text-gray-700 text-sm">
+                      Apakah kamu yakin ingin menghapus proyek{" "}
+                      <span className="font-semibold">{proyek.namaProyek}</span>
+                      ?<br />
+                      Tindakan ini tidak dapat dibatalkan.
+                    </p>
+
+                    <div className="flex justify-end gap-3 mt-5">
+                      <DialogClose asChild>
+                        <Button variant="outline">Batal</Button>
+                      </DialogClose>
+
+                      <Button
+                        className="bg-red-600 hover:bg-red-700 text-white"
+                        onClick={async () => {
+                          await handleHapusProyek();
+                        }}
+                      >
+                        Hapus
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
 

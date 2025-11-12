@@ -1,3 +1,5 @@
+// src/app/api/fase/[id]/status/route.ts
+
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
@@ -14,6 +16,12 @@ export async function PATCH(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { status } = await req.json();
+  //   enum FaseStatus {
+  //   BELUM_DIMULAI
+  //   BERJALAN
+  //   SELESAI
+  // }
+
   if (!status) {
     return NextResponse.json(
       { error: "Status fase wajib diisi" },

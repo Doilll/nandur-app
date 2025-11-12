@@ -1,7 +1,7 @@
 // Empty State Component
 export default function EmptyState({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
-    <div className="text-center py-12 bg-green-50 rounded-2xl border border-gray-200">
+    <div className="text-center py-12 bg-green-50 rounded-2xl">
       <div className="flex justify-center mb-4">
         <div className="text-gray-300">
           {icon}
