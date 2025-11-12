@@ -1,6 +1,6 @@
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 
 export async function PATCH(
   req: Request,
@@ -16,25 +16,24 @@ export async function PATCH(
   const { status } = await req.json();
   if (!status) {
     return NextResponse.json(
-      { error: "Status proyek wajib diisi" },
+      { error: "Status fase wajib diisi" },
       { status: 400 }
     );
   }
 
   try {
-    const proyek = await prisma.proyekTani.update({
+    const updatedFase = await prisma.faseProyek.update({
       where: { id },
       data: {
         status,
       },
-      include: {
-        petani: true,
-        faseProyek: true,
-      },
     });
-    return NextResponse.json({ proyek }, { status: 200 });
+    return NextResponse.json(
+      { message: "Fase berhasil diperbarui", fase: updatedFase },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error updating proyek:", error);
+    console.error("Error updating fase:", error);
     return NextResponse.json(
       { error: "Terjadi kesalahan server" },
       { status: 500 }

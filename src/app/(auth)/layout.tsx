@@ -40,13 +40,13 @@ export default async function AuthLayout({
             {/* Auth Switch */}
             <div className="flex items-center space-x-4">
               <Link
-                href="/auth/login"
+                href="/login"
                 className="text-green-700 hover:text-green-600 font-medium transition-colors"
               >
                 Masuk
               </Link>
               <Link
-                href="/auth/register"
+                href="/register"
                 className="bg-green-600 text-white px-6 py-2 rounded-full font-medium hover:bg-green-700 transition-colors shadow-lg hover:shadow-xl"
               >
                 Daftar

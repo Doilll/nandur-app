@@ -39,7 +39,7 @@ export default async function PetaniPage({
   });
 
   return (
-    <div className="lg:col-span-2">
+    <div className="lg:col-span-2 max-w-2xl mx-auto w-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Proyek Tani</h2>
         <p className="text-gray-600 mt-2">
@@ -47,7 +47,7 @@ export default async function PetaniPage({
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="grid md:grid-cols-2 gap-2 grid-cols-1">
         {petani?.proyekTani?.map((proyek) => (
           <ProjectCard key={proyek.id} proyek={proyek} />
         ))}

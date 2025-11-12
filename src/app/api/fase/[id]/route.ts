@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(
@@ -7,26 +7,18 @@ export async function GET(
   { params }: { params: { id: string } }
 ): Promise<NextResponse> {
   const { id } = await params;
-
   try {
-    const proyek = await prisma.proyekTani.findUnique({
+    const faseProyek = await prisma.faseProyek.findMany({
       where: {
-        id,
+        proyekTaniId: id,
       },
-      include: {
-        petani: true,
-        faseProyek: true,
+      orderBy: {
+        urutanFase: "asc",
       },
     });
-    if (!proyek) {
-      return NextResponse.json(
-        { error: "Proyek tidak ditemukan" },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json({ proyek }, { status: 200 });
+    return NextResponse.json({ faseProyek }, { status: 200 });
   } catch (error) {
-    console.error("Error fetching proyek:", error);
+    console.log("Error fetching fase proyek:", error);
     return NextResponse.json(
       { error: "Terjadi kesalahan server" },
       { status: 500 }
@@ -43,32 +35,41 @@ export async function PUT(
   const user = session?.user;
 
   if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 400 });
   }
-  const { namaProyek, deskripsi, lokasi, image } = await req.json();
-  if (!namaProyek || !deskripsi || !lokasi || !image) {
+
+  const { namaFase, deskripsi, proyekTaniId, gambarFase, urutanFase } =
+    await req.json();
+  if (!namaFase || !deskripsi || !proyekTaniId || !gambarFase || !urutanFase) {
     return NextResponse.json(
-      { error: "Nama proyek, deskripsi, dan lokasi wajib diisi" },
+      {
+        error:
+          "Nama fase, deskripsi, proyekTaniId, gambarFase, dan urutanFase wajib diisi",
+      },
       { status: 400 }
     );
   }
 
   try {
-    const updatedProyek = await prisma.proyekTani.update({
+    const updatedFaseProyek = await prisma.faseProyek.update({
       where: { id },
       data: {
-        namaProyek,
+        namaFase,
         deskripsi,
-        lokasi,
-        image,
+        proyekTaniId,
+        gambarFase,
+        urutanFase,
       },
     });
     return NextResponse.json(
-      { message: "Proyek berhasil diperbarui", proyek: updatedProyek },
+      {
+        message: "Fase proyek berhasil diperbarui",
+        faseProyek: updatedFaseProyek,
+      },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error updating proyek:", error);
+    console.error("Error updating fase proyek:", error);
     return NextResponse.json(
       { error: "Terjadi kesalahan server" },
       { status: 500 }
@@ -84,20 +85,23 @@ export async function DELETE(
 
   const session = await auth.api.getSession({ headers: req.headers });
   const user = session?.user;
-
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   try {
-    const deletedProyek = await prisma.proyekTani.delete({
+    const deletedFaseProyek = await prisma.faseProyek.delete({
       where: { id },
     });
     return NextResponse.json(
-      { message: "Proyek berhasil dihapus", proyek: deletedProyek },
+      {
+        message: "Fase proyek berhasil dihapus",
+        faseProyek: deletedFaseProyek,
+      },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error deleting proyek:", error);
+    console.error("Error deleting fase proyek:", error);
     return NextResponse.json(
       { error: "Terjadi kesalahan server" },
       { status: 500 }

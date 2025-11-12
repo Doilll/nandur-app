@@ -28,15 +28,7 @@ export const auth = betterAuth({
   },
   plugins: [
     openAPI(),
-    // customSession(async ({user, session }) => {
-    //   return {
-    //     user: {
-    //       ...user,
-    //       username: user.username || null,
-    //     },
-    //     session,
-    //   };
-    // }),
+   
   ],
 });
 
