@@ -33,7 +33,7 @@ export default async function FasePage({
     <div className="min-h-screen bg-green-50 py-10 px-4">
       <div className="max-w-6xl mx-auto space-y-10">
         {/* Header Section */}
-        <div className="flex justify-between items-center md:mt-1 mt-5">
+        <div className="flex justify-between items-center md:mt-0 mt-5">
           <h1 className="text-3xl font-bold text-green-800 flex items-center gap-2">
             <Sprout className="w-7 h-7" /> Fase Proyek
           </h1>

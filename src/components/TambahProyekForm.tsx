@@ -239,6 +239,7 @@ export default function TambahProyekForm({onSuccess}: {onSuccess: () => void}) {
             accept="image/*"
             multiple={false}
             id="proyek-image-dropzone"
+            disabled={isLoading}
           />
 
             {/* Preview Image */}

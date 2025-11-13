@@ -188,6 +188,7 @@ export default function TambahFaseForm({
           accept="image/*"
           multiple={true}
           id="fase-image-dropzone"
+          disabled={isLoading}
         />
 
         {previewImages.length > 0 ? (

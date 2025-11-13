@@ -41,3 +41,37 @@ export async function POST(req: Request): Promise<NextResponse> {
     );
   }
 }
+
+
+export async function GET(req: Request): Promise<NextResponse> {
+  const session = await auth.api.getSession({ headers: req.headers });
+  const user = session?.user;
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const proyekTani = await prisma.proyekTani.findMany({
+      where: {
+        petaniId: user.id,
+      },
+      select: {
+        id: true,
+        namaProyek: true,
+        status: true,
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+
+    return NextResponse.json({ proyekTani });
+  } catch (error) {
+    console.error("Error fetching proyek:", error);
+    return NextResponse.json(
+      { error: "Terjadi kesalahan server" },
+      { status: 500 }
+    );
+  }
+}

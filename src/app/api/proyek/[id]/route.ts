@@ -16,6 +16,7 @@ export async function GET(
       include: {
         petani: true,
         faseProyek: true,
+        produk: true,
       },
     });
     if (!proyek) {

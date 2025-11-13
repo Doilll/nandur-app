@@ -39,6 +39,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import TambahFaseForm from "@/components/TambahFaseForm";
+import TambahProdukModal from "@/components/TambahProdukModal";
+import ProductCardDashboard from "@/components/ProductCardDashboard";
 
 interface ProyekTani {
   id: string;
@@ -55,6 +57,7 @@ interface ProyekTani {
     username: string;
   };
   faseProyek: FaseProyek[];
+  produk: Produk[];
 }
 
 interface FaseProyek {
@@ -66,6 +69,16 @@ interface FaseProyek {
   gambarFase: string[];
   createdAt: string;
   updatedAt: string;
+}
+
+interface Produk {
+  id: string;
+  namaProduk: string;
+  deskripsi: string;
+  harga: number;
+  stok: number;
+  gambarProduk: string[];
+  createdAt: Date;
 }
 
 export default function ProjectDetailPage() {
@@ -218,7 +231,7 @@ export default function ProjectDetailPage() {
     <div className="min-h-screen bg-green-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 sm:mt-5 lg:mt-0 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {/* Kiri: Judul */}
             <div className="flex items-start sm:items-center space-x-3">
@@ -403,11 +416,13 @@ export default function ProjectDetailPage() {
                 <h3 className="text-lg font-medium text-gray-900">
                   Fase Proyek
                 </h3>
-                {proyek.faseProyek
-                  .sort((a, b) => a.urutanFase - b.urutanFase)
-                  .map((fase) => (
-                    <FaseCard key={fase.id} fase={fase} />
-                  ))}
+                <div className="space-y-2">
+                  {proyek.faseProyek
+                    .sort((a, b) => a.urutanFase - b.urutanFase)
+                    .map((fase) => (
+                      <FaseCard key={fase.id} fase={fase} />
+                    ))}
+                </div>
 
                 {proyek.faseProyek.length === 0 && (
                   <div className="text-center py-8 text-gray-500">
@@ -416,7 +431,37 @@ export default function ProjectDetailPage() {
                   </div>
                 )}
               </div>
+
+              
             </div>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mt-8">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Produk Proyek
+                  </h2>
+                  <TambahProdukModal
+                    proyekId={id}
+                    onSuccess={() => {
+                      startTransition(() => {
+                        fetchProyek();
+                      });
+                    }}
+                  />
+                </div>
+
+                {proyek.produk && proyek.produk.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+                    {proyek.produk.map((produk) => (
+                      <ProductCardDashboard key={produk.id} produk={produk} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <Package className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <p>Belum ada produk ditambahkan</p>
+                  </div>
+                )}
+              </div>
           </div>
 
           {/* Sidebar */}
@@ -471,12 +516,6 @@ export default function ProjectDetailPage() {
                   icon={<Edit3 className="h-4 w-4" />}
                   text="Update Progress"
                   color="green"
-                />
-                <ActionButton
-                  href={`/dashboard/proyek/${id}/produk`}
-                  icon={<Package className="h-4 w-4" />}
-                  text="Tambah Produk"
-                  color="purple"
                 />
                 <Dialog>
                   <DialogTrigger asChild>

@@ -1,0 +1,99 @@
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { NextResponse } from "next/server";
+
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
+  const { id } = await params;
+
+  try {
+    const produk = await prisma.produk.findUnique({
+      where: {
+        id: id,
+      },
+    });
+    return NextResponse.json(produk);
+  } catch (error) {
+    console.error("Error fetching produk:", error);
+    return NextResponse.json(
+      { error: "Terjadi kesalahan server" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
+  const session = await auth.api.getSession({ headers: req.headers });
+  const user = session?.user;
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { id } = await params;
+
+  try {
+    const produk = await prisma.produk.delete({
+      where: {
+        id: id,
+      },
+    });
+    return NextResponse.json({ message: "Produk berhasil dihapus", produk });
+  } catch (error) {
+    console.error("Error deleting produk:", error);
+    return NextResponse.json(
+      { error: "Terjadi kesalahan server" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
+  const session = await auth.api.getSession({ headers: req.headers });
+  const user = session?.user;
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const { id } = await params;
+
+  const { namaProduk, deskripsi, harga, stok, gambarProduk } = await req.json();
+  if (!namaProduk || !deskripsi || !harga || !stok || !gambarProduk) {
+    return NextResponse.json(
+      {
+        error:
+          "Nama produk, deskripsi, harga, stok, gambar produk, dan proyek tani wajib diisi",
+      },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const produk = await prisma.produk.update({
+      where: {
+        id: id,
+      },
+      data: {
+        namaProduk,
+        deskripsi,
+        harga,
+        stok,
+        gambarProduk,
+      },
+    });
+    return NextResponse.json({ message: "Produk berhasil diupdate", produk });
+  } catch (error) {
+    console.error("Error updating produk:", error);
+    return NextResponse.json(
+      { error: "Terjadi kesalahan server" },
+      { status: 500 }
+    );
+  }
+}
