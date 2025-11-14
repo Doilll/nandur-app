@@ -1,73 +1,37 @@
 // components/EditProdukForm.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Trash2, ImageIcon, DollarSign, Package } from "lucide-react";
 import FileDropzone from "./FileDropZone";
 
-interface Produk {
-  id: string;
-  namaProduk: string;
-  deskripsi: string;
-  harga: number;
-  stok: number;
-  gambarProduk: string[];
-}
-
 interface EditProdukFormProps {
   produkId: string;
-  onSuccess?: () => void;
+  produk: {
+    namaProduk: string;
+    deskripsi: string;
+    harga: number;
+    stok: number;
+    gambarProduk: string[];
+  };
 }
 
-export default function EditProdukForm({ produkId, onSuccess }: EditProdukFormProps) {
+export default function EditProdukForm({ produkId, produk }: EditProdukFormProps) {
   const router = useRouter();
   const [produkData, setProdukData] = useState({
-    namaProduk: "",
-    deskripsi: "",
-    harga: "",
-    stok: "",
+    namaProduk: produk.namaProduk,
+    deskripsi: produk.deskripsi || "",
+    harga: produk.harga.toString(),
+    stok: produk.stok.toString(),
   });
-
-  const [existingImages, setExistingImages] = useState<string[]>([]);
+  
+  const [existingImages, setExistingImages] = useState<string[]>(produk.gambarProduk || []);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingData, setIsLoadingData] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  // Load produk data
-  useEffect(() => {
-    const loadProdukData = async () => {
-      try {
-        const response = await fetch(`/api/produk/${produkId}`);
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || "Gagal memuat data produk");
-        }
-
-        const produk: Produk = result.produk;
-        setProdukData({
-          namaProduk: produk.namaProduk,
-          deskripsi: produk.deskripsi,
-          harga: produk.harga.toString(),
-          stok: produk.stok.toString(),
-        });
-        setExistingImages(produk.gambarProduk || []);
-        
-      } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : "Terjadi kesalahan saat memuat data produk";
-        setError(errorMessage);
-        console.error("Error loading product:", err);
-      } finally {
-        setIsLoadingData(false);
-      }
-    };
-
-    loadProdukData();
-  }, [produkId]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -222,14 +186,10 @@ export default function EditProdukForm({ produkId, onSuccess }: EditProdukFormPr
       
       setSuccess("✅ Produk berhasil diupdate!");
       
-      // Redirect atau panggil callback sukses
+      // Redirect setelah sukses
       setTimeout(() => {
-        if (onSuccess) {
-          onSuccess();
-        } else {
-          router.push("/dashboard/produk");
-          router.refresh();
-        }
+        router.push("/dashboard/produk");
+        router.refresh();
       }, 1500);
 
     } catch (err) {
@@ -243,15 +203,6 @@ export default function EditProdukForm({ produkId, onSuccess }: EditProdukFormPr
       setIsLoading(false);
     }
   };
-
-  if (isLoadingData) {
-    return (
-      <div className="flex justify-center items-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-green-600" />
-        <span className="ml-2 text-gray-600">Memuat data produk...</span>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 font-[Inter] p-1">
@@ -443,13 +394,6 @@ export default function EditProdukForm({ produkId, onSuccess }: EditProdukFormPr
             <div className="text-xs text-gray-400 mt-1">
               Upload minimal satu gambar produk
             </div>
-          </div>
-        )}
-
-        {/* Info Jumlah Gambar */}
-        {(pendingFiles.length > 0 || existingImages.length > 0) && (
-          <div className="mt-2 text-sm text-green-600">
-            Total gambar: {existingImages.length} existing + {pendingFiles.length} baru = {existingImages.length + pendingFiles.length}
           </div>
         )}
       </div>

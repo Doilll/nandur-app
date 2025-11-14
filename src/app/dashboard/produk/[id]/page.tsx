@@ -22,16 +22,19 @@ export default async function EditProdukPage({ params }: EditProdukPageProps) {
     redirect("/login");
   }
 
-  const {id} = await params;
+  const { id } = await params;
+  
+  // Ambil data produk dari database
   const produk = await prisma.produk.findUnique({
     where: {
       id: id,
+      petaniId: session.user.id, // Pastikan hanya pemilik yang bisa akses
     },
   });
+
   if (!produk) {
     notFound();
   }
-
 
   return (
     <div className="min-h-screen bg-green-50 py-8">
@@ -53,6 +56,7 @@ export default async function EditProdukPage({ params }: EditProdukPageProps) {
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
           <EditProdukForm 
             produkId={id}
+            produk={produk}
           />
         </div>
       </div>
