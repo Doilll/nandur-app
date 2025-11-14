@@ -1,8 +1,6 @@
-// src/app/petani/[username]/page.tsx
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+
 import { prisma } from "@/lib/prisma";
-import { Leaf, Sprout } from "lucide-react";
+import { Sprout } from "lucide-react";
 import ProjectCard from "@/components/ProjectCard";
 import EmptyState from "@/components/EmptyState";
 
@@ -39,7 +37,7 @@ export default async function PetaniPage({
   });
 
   return (
-    <div className="lg:col-span-2 max-w-2xl mx-auto w-full">
+    <div className="lg:col-span-2 max-w-2xl w-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Proyek Tani</h2>
         <p className="text-gray-600 mt-2">
