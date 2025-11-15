@@ -39,7 +39,7 @@ export default function ShareButton({
       type="button"
       onClick={handleShare}
       aria-label={label}
-      className={`flex items-center gap-1 p-2 text-gray-500 hover:text-green-600 rounded-full transition-colors ${className}`}
+      className={`flex items-center gap-1 p-2 rounded-full transition-colors ${className}`}
     >
       {icon}
       <span className="hidden sm:inline">{label}</span>

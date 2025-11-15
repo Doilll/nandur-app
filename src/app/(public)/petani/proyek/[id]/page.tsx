@@ -1,40 +1,40 @@
-// src/app/petani/[username]/proyek/[id]/page.tsx
+// src/app/proyek/[id]/page.tsx
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { 
-  Calendar, 
-  MapPin, 
-  Sprout, 
-  Clock, 
-  ArrowLeft, 
-  Share2, 
-  Heart,
-  CheckCircle,
-  PlayCircle,
-  PauseCircle
-} from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import {
+  ArrowLeft,
+  MapPin,
+  Calendar,
+  User,
+  Sprout,
+  Package,
+  Rss,
+  CheckCircle2,
+  Clock,
+  ArrowRight,
+  Heart,
+  BarChart3,
+} from "lucide-react";
+import { format } from "date-fns";
+import { id as idLocale } from "date-fns/locale";
+import ShareButton from "@/components/ShareButton";
+import FaseTimelineCard from "@/components/FaseTimelineCard";
+import ProductCard from "@/components/ProductCard";
+import StatItem from "@/components/StatItem";
 
 interface DetailProyekPageProps {
-  params: Promise<{ 
-    id: string; 
+  params: Promise<{
+    id: string;
   }>;
 }
 
-const statusConfig = {
-  PERSIAPAN: { label: "Persiapan", color: "bg-yellow-100 text-yellow-800 border-yellow-200", icon: Clock },
-  PENANAMAN: { label: "Penanaman", color: "bg-blue-100 text-blue-800 border-blue-200", icon: PlayCircle },
-  PEMELIHARAAN: { label: "Pemeliharaan", color: "bg-green-100 text-green-800 border-green-200", icon: Sprout },
-  PANEN: { label: "Panen", color: "bg-orange-100 text-orange-800 border-orange-200", icon: CheckCircle },
-  SELESAI: { label: "Selesai", color: "bg-gray-100 text-gray-800 border-gray-200", icon: CheckCircle },
-};
+export default async function DetailProyekPage({
+  params,
+}: DetailProyekPageProps) {
+  const { id } = await params;
 
-export default async function DetailProyekPage({ params }: DetailProyekPageProps) {
-  const {  id } = await params;
-  
   const proyek = await prisma.proyekTani.findUnique({
     where: { id },
     include: {
@@ -46,342 +46,352 @@ export default async function DetailProyekPage({ params }: DetailProyekPageProps
           image: true,
           bio: true,
           lokasi: true,
-        }
+        },
       },
       faseProyek: {
         orderBy: {
-          urutanFase: 'asc'
+          urutanFase: "asc",
         },
         select: {
-            id: true,
-            namaFase: true,
-            deskripsi: true,
-            status: true,
-            gambarFase: true,
-        }
+          id: true,
+          namaFase: true,
+          deskripsi: true,
+          status: true,
+          gambarFase: true,
+          urutanFase: true,
+        },
       },
       produk: {
         where: {
           stok: {
-            gt: 0
-          }
+            gt: 0,
+          },
         },
         orderBy: {
-          createdAt: 'desc'
+          createdAt: "desc",
         },
-        take: 6
+        take: 6,
       },
       _count: {
         select: {
           faseProyek: true,
           produk: true,
-          feeds: true
-        }
-      }
+          feeds: true,
+        },
+      },
     },
   });
 
   if (!proyek) return notFound();
 
-  const StatusIcon = statusConfig[proyek.status].icon;
+  const completedFases = proyek.faseProyek.filter(
+    (fase) => fase.status === "SELESAI"
+  ).length;
+  const progress =
+    proyek.faseProyek.length > 0
+      ? (completedFases / proyek.faseProyek.length) * 100
+      : 0;
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('id-ID', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric'
-    }).format(date);
+  const getStatusColor = (status: string) => {
+    const colors = {
+      PERSIAPAN: "bg-yellow-500/10 text-yellow-600 border-yellow-200",
+      PENANAMAN: "bg-blue-500/10 text-blue-600 border-blue-200",
+      PEMELIHARAAN: "bg-orange-500/10 text-orange-600 border-orange-200",
+      PANEN: "bg-green-500/10 text-green-600 border-green-200",
+      SELESAI: "bg-gray-500/10 text-gray-600 border-gray-200",
+    };
+    return (
+      colors[status as keyof typeof colors] || "bg-gray-500/10 text-gray-600"
+    );
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0,
-    }).format(amount);
+  const getStatusIcon = (status: string) => {
+    const icons = {
+      PERSIAPAN: Clock,
+      PENANAMAN: Sprout,
+      PEMELIHARAAN: BarChart3,
+      PANEN: Package,
+      SELESAI: CheckCircle2,
+    };
+    return icons[status as keyof typeof icons] || Clock;
   };
+
+  const StatusIcon = getStatusIcon(proyek.status);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100">
-      {/* Header Navigation */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-green-200 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <Link 
-              href={`/petani/${proyek.petani.username}`}
-              className="flex items-center gap-2 text-green-600 hover:text-green-700 transition-colors"
+    <div className="min-h-screen bg-linear-to-b from-white to-green-50">
+      {/* Hero Section */}
+      <section className="relative bg-linear-to-br from-green-600 via-emerald-600 to-teal-700 text-white overflow-hidden">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex justify-between items-center py-5">
+            <Link
+              href={`petani/${proyek.petani.username}`}
+              className="flex items-center space-x-2 group"
             >
-              <ArrowLeft className="w-5 h-5" />
-              <span>Kembali ke Profil</span>
+              <ArrowLeft className="h-5 w-5 text-green-100 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-lg font-semibold text-green-100">
+                Kembali
+              </span>
             </Link>
-            
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                <Heart className="w-4 h-4" />
-                <span>Simpan</span>
-              </Button>
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                <Share2 className="w-4 h-4" />
-                <span>Bagikan</span>
-              </Button>
+
+            <div className="flex items-center space-x-4">
+              <button className="p-2 hover:bg-red-500 rounded-lg transition-colors">
+                <Heart className="h-5 w-5 text-green-100" />
+              </button>
+              <ShareButton text="share projek ini" className="text-green-100 hover:text-green-900" title={proyek.namaProyek} />
             </div>
           </div>
-        </div>
-      </header>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <div className="flex items-center space-x-4">
+                <div
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-full backdrop-blur-sm bg-white/10 border border-white/20`}
+                >
+                  <StatusIcon className="h-4 w-4" />
+                  <span className="font-medium capitalize text-sm">
+                    {proyek.status.toLowerCase().replace("_", " ")}
+                  </span>
+                </div>
+                <div className="text-green-100 text-sm">
+                  {Math.round(progress)}% Selesai
+                </div>
+              </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section */}
-        <div className="grid lg:grid-cols-2 gap-8 mb-12">
-          {/* Project Image */}
-          <div className="relative">
-            <div className="aspect-square rounded-3xl overflow-hidden shadow-2xl bg-white">
-              <Image
-                src={proyek.image}
-                alt={proyek.namaProyek}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-            
-            {/* Status Badge */}
-            <div className="absolute top-6 left-6">
-              <Badge className={`${statusConfig[proyek.status].color} border-2 px-4 py-2 text-sm font-semibold flex items-center gap-2`}>
-                <StatusIcon className="w-4 h-4" />
-                {statusConfig[proyek.status].label}
-              </Badge>
-            </div>
-          </div>
-
-          {/* Project Info */}
-          <div className="flex flex-col justify-center space-y-6">
-            <div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
                 {proyek.namaProyek}
               </h1>
-              <p className="text-xl text-gray-600 leading-relaxed">
+
+              <p className="text-xl text-green-100 leading-relaxed max-w-2xl">
                 {proyek.deskripsi}
               </p>
-            </div>
 
-            {/* Project Stats */}
-            <div className="grid grid-cols-3 gap-4 py-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{proyek._count.faseProyek}</div>
-                <div className="text-sm text-gray-600">Fase</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{proyek._count.produk}</div>
-                <div className="text-sm text-gray-600">Produk</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-600">{proyek._count.feeds}</div>
-                <div className="text-sm text-gray-600">Update</div>
-              </div>
-            </div>
-
-            {/* Location & Date */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-gray-600">
-                <MapPin className="w-5 h-5 text-green-500" />
-                <span>{proyek.lokasi}</span>
-              </div>
-              <div className="flex items-center gap-3 text-gray-600">
-                <Calendar className="w-5 h-5 text-green-500" />
-                <span>Dimulai {formatDate(proyek.createdAt)}</span>
+              <div className="flex flex-wrap gap-4 pt-4">
+                <div className="flex items-center space-x-2 text-green-100">
+                  <MapPin className="h-5 w-5" />
+                  <span>{proyek.lokasi}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-green-100">
+                  <Calendar className="h-5 w-5" />
+                  <span>
+                    Dibuat{" "}
+                    {format(new Date(proyek.createdAt), "MMMM yyyy", {
+                      locale: idLocale,
+                    })}
+                  </span>
+                </div>
+                <div className="flex items-center space-x-2 text-green-100">
+                  <Sprout className="h-5 w-5" />
+                  <span>{proyek._count.faseProyek} Fase</span>
+                </div>
               </div>
             </div>
 
-            {/* Petani Info */}
-            <div className="flex items-center gap-4 p-4 bg-white/50 rounded-2xl border border-green-200">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden bg-green-100">
-                {proyek.petani.image ? (
-                  <Image
-                    src={proyek.petani.image}
-                    alt={proyek.petani.name}
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-green-500 text-white font-semibold">
-                    {proyek.petani.name.charAt(0)}
+            {/* Stats Card */}
+            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/20">
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-white mb-1">
+                    {proyek._count.faseProyek}
                   </div>
-                )}
+                  <div className="text-green-100 text-sm">Total Fase</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-white mb-1">
+                    {proyek._count.produk}
+                  </div>
+                  <div className="text-green-100 text-sm">Produk</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-white mb-1">
+                    {completedFases}
+                  </div>
+                  <div className="text-green-100 text-sm">Fase Selesai</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-white mb-1">
+                    {proyek._count.feeds}
+                  </div>
+                  <div className="text-green-100 text-sm">Update</div>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-gray-900">{proyek.petani.name}</h3>
-                <p className="text-sm text-gray-600">@{proyek.petani.username}</p>
+
+              {/* Progress Bar */}
+              <div className="mt-6">
+                <div className="flex justify-between text-sm text-green-100 mb-2">
+                  <span>Progress Proyek</span>
+                  <span>{Math.round(progress)}%</span>
+                </div>
+                <div className="w-full bg-white/20 rounded-full h-3">
+                  <div
+                    className="bg-white h-3 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${progress}%` }}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Farmer Info */}
+              <div className="mt-6 pt-6 border-t border-white/20">
+                <Link
+                  href={`/petani/${proyek.petani.username}`}
+                  className="flex items-center space-x-3 group"
+                >
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    {proyek.petani.image ? (
+                      <Image
+                        src={proyek.petani.image}
+                        alt={proyek.petani.name}
+                        width={48}
+                        height={48}
+                        className="w-10 h-10 rounded-full"
+                      />
+                    ) : (
+                      <User className="h-6 w-6 text-white" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-white font-semibold group-hover:text-green-200 transition-colors">
+                      {proyek.petani.name}
+                    </div>
+                    <div className="text-green-100 text-sm">
+                      @{proyek.petani.username}
+                    </div>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-white group-hover:translate-x-1 transition-transform" />
+                </Link>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Fase Proyek Section */}
-        {proyek.faseProyek.length > 0 && (
-          <section className="mb-16">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900">Tahapan Proyek</h2>
-              <div className="text-sm text-gray-500">
-                {proyek.faseProyek.length} fase terselesaikan
-              </div>
-            </div>
-
-            <div className="grid gap-6">
-              {proyek.faseProyek.map((fase, index) => (
-                <div 
-                  key={fase.id}
-                  className="bg-white rounded-2xl shadow-lg border border-green-200 overflow-hidden hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-100 text-green-600 font-bold text-lg">
-                          {index + 1}
-                        </div>
-                        <div>
-                          <h3 className="text-xl font-semibold text-gray-900">{fase.namaFase}</h3>
-                          <p className="text-gray-600 mt-1">{fase.deskripsi}</p>
-                        </div>
-                      </div>
-                      <Badge className={
-                        fase.status === 'SELESAI' 
-                          ? "bg-green-100 text-green-800 border-green-200" 
-                          : fase.status === 'BERJALAN'
-                          ? "bg-blue-100 text-blue-800 border-blue-200"
-                          : "bg-gray-100 text-gray-800 border-gray-200"
-                      }>
-                        {fase.status === 'SELESAI' ? 'Selesai' : 
-                         fase.status === 'BERJALAN' ? 'Berjalan' : 'Belum Dimulai'}
-                      </Badge>
-                    </div>
-
-                    {/* Gallery Images */}
-                    {fase.gambarFase.length > 0 && (
-                      <div className="mt-4">
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                          {fase.gambarFase.slice(0, 4).map((gambar, imgIndex) => (
-                            <div 
-                              key={imgIndex}
-                              className="aspect-square rounded-xl overflow-hidden bg-gray-100 relative group cursor-pointer"
-                            >
-                              <Image
-                                src={gambar}
-                                alt={`${fase.namaFase} ${imgIndex + 1}`}
-                                fill
-                                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              />
-                              {imgIndex === 3 && fase.gambarFase.length > 4 && (
-                                <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-semibold">
-                                  +{fase.gambarFase.length - 4} lagi
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Produk Section */}
-        {proyek.produk.length > 0 && (
-          <section className="mb-16">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900">Hasil Produk</h2>
-              <Link 
-                href={`/petani/${proyek.petani.username}/produk`}
-                className="text-green-600 hover:text-green-700 font-semibold"
-              >
-                Lihat Semua →
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {proyek.produk.map((produk) => (
-                <div 
-                  key={produk.id}
-                  className="bg-white rounded-2xl shadow-lg border border-green-200 overflow-hidden hover:shadow-xl transition-all duration-300 group"
-                >
-                  <div className="relative aspect-square bg-gray-100 overflow-hidden">
-                    {produk.gambarProduk[0] && (
-                      <Image
-                        src={produk.gambarProduk[0]}
-                        alt={produk.namaProduk}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    )}
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-white/90 text-gray-800 border-0 font-semibold">
-                        Stok: {produk.stok}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6">
-                    <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-1">
-                      {produk.namaProduk}
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                      {produk.deskripsi}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-green-600">
-                        {formatCurrency(produk.harga)}
-                      </span>
-                      <Button className="bg-green-600 hover:bg-green-700 text-white">
-                        Beli Sekarang
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* About Petani Section */}
-        <section className="bg-white rounded-2xl shadow-lg border border-green-200 p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Tentang Petani</h2>
-          <div className="flex items-start gap-6">
-            <div className="relative w-20 h-20 rounded-full overflow-hidden bg-green-100 shrink-0">
-              {proyek.petani.image ? (
-                <Image
-                  src={proyek.petani.image}
-                  alt={proyek.petani.name}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-green-500 text-white font-bold text-xl">
-                  {proyek.petani.name.charAt(0)}
-                </div>
-              )}
-            </div>
-            <div className="flex-1">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{proyek.petani.name}</h3>
-              <p className="text-gray-600 mb-4 leading-relaxed">
-                {proyek.petani.bio || "Petani yang berdedikasi untuk menghasilkan produk pertanian berkualitas dengan metode yang berkelanjutan."}
-              </p>
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                {proyek.petani.lokasi && (
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    <span>{proyek.petani.lokasi}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-2">
-                  <Sprout className="w-4 h-4" />
-                  <span>Bergabung {formatDate(proyek.createdAt)}</span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-12">
+            {/* Project Timeline */}
+            <section className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-8">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Timeline Proyek
+                </h2>
+                <div className="text-sm text-gray-500">
+                  {completedFases} dari {proyek.faseProyek.length} fase selesai
                 </div>
               </div>
-            </div>
+
+              <div className="space-y-6">
+                {proyek.faseProyek.map((fase, index) => (
+                  <FaseTimelineCard
+                    key={fase.id}
+                    fase={fase}
+                    index={index}
+                    totalFases={proyek.faseProyek.length}
+                  />
+                ))}
+              </div>
+            </section>
+
+            {/* Products Section */}
+            {proyek.produk.length > 0 && (
+              <section className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-8">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    Hasil Panen
+                  </h2>
+                  <Link
+                    href={`/petani/${proyek.petani.username}/produk`}
+                    className="text-green-600 hover:text-green-700 font-medium flex items-center space-x-2"
+                  >
+                    <span>Lihat Semua</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {proyek.produk.map((produk) => (
+                    <ProductCard key={produk.id} produk={produk} />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
-        </section>
+
+          {/* Sidebar */}
+          <div className="space-y-8">
+            {/* Farmer Profile */}
+            <section className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Tentang Petani
+              </h3>
+              <Link
+                href={`/petani/${proyek.petani.username}`}
+                className="block group"
+              >
+                <div className="flex items-center space-x-4 mb-4">
+                  <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center border-2 border-green-200">
+                    {proyek.petani.image ? (
+                      <Image
+                        src={proyek.petani.image}
+                        alt={proyek.petani.name}
+                        width={64}
+                        height={64}
+                        className="rounded-2xl object-cover w-16 h-16"
+                      />
+                    ) : (
+                      <User className="h-8 w-8 text-green-600" />
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
+                      {proyek.petani.name}
+                    </h4>
+                    <p className="text-gray-500 text-sm">
+                      @{proyek.petani.username}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+
+              {proyek.petani.bio && (
+                <p className="text-gray-600 text-sm leading-relaxed mb-4">
+                  {proyek.petani.bio}
+                </p>
+              )}
+
+              <div className="flex items-center space-x-2 text-sm text-gray-500">
+                <MapPin className="h-4 w-4" />
+                <span>{proyek.petani.lokasi}</span>
+              </div>
+            </section>
+
+            {/* Project Stats */}
+            <section className="bg-linear-to-br from-green-600 to-emerald-700 rounded-3xl p-6 text-white">
+              <h3 className="text-lg font-semibold mb-4">Statistik Proyek</h3>
+              <div className="space-y-4">
+                <StatItem
+                  icon={<Sprout className="h-5 w-5" />}
+                  label="Total Fase"
+                  value={proyek._count.faseProyek.toString()}
+                />
+                <StatItem
+                  icon={<CheckCircle2 className="h-5 w-5" />}
+                  label="Fase Selesai"
+                  value={completedFases.toString()}
+                />
+                <StatItem
+                  icon={<Package className="h-5 w-5" />}
+                  label="Produk Tersedia"
+                  value={proyek._count.produk.toString()}
+                />
+                <StatItem
+                  icon={<Rss className="h-5 w-5" />}
+                  label="Update"
+                  value={proyek._count.feeds.toString()}
+                />
+              </div>
+            </section>
+          </div>
+        </div>
       </div>
     </div>
   );

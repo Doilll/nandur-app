@@ -70,6 +70,8 @@ model Produk {
   deskripsi    String
   harga        Float
   stok         Int
+  status       StatusProduk @default(TERSEDIA)
+  Unit         String?
   gambarProduk String[]
   proyekTaniId String
   proyekTani   ProyekTani @relation(fields: [proyekTaniId], references: [id], onDelete: Cascade)
@@ -193,4 +195,10 @@ enum FaseStatus {
   BELUM_DIMULAI
   BERJALAN
   SELESAI
+}
+
+enum StatusProduk {
+  TERJUAL
+  TERSEDIA
+  BELUM_TERSEDIA
 }
