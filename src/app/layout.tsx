@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nandur App",
+  title: "Nandur - Tempat Petani Kumpul",
   description: "Tempat Petani Terhubung dan Berkembang",
 };
 

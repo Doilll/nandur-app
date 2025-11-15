@@ -64,12 +64,12 @@ export async function PUT(
   }
   const { id } = await params;
 
-  const { namaProduk, deskripsi, harga, stok, gambarProduk } = await req.json();
-  if (!namaProduk || !deskripsi || !harga || !stok || !gambarProduk) {
+  const { namaProduk, deskripsi, harga, unit, gambarProduk, status } = await req.json();
+  if (!namaProduk || !deskripsi || !harga || !unit || !gambarProduk || !status) {
     return NextResponse.json(
       {
         error:
-          "Nama produk, deskripsi, harga, stok, gambar produk, dan proyek tani wajib diisi",
+          "Nama produk, deskripsi, harga, status, unit, gambar produk, dan proyek tani wajib diisi",
       },
       { status: 400 }
     );
@@ -84,8 +84,9 @@ export async function PUT(
         namaProduk,
         deskripsi,
         harga,
-        stok,
+        unit,
         gambarProduk,
+        status
       },
     });
     return NextResponse.json({ message: "Produk berhasil diupdate", produk });

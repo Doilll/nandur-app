@@ -16,6 +16,7 @@ import {
   ArrowRight,
   Heart,
   BarChart3,
+  ShoppingCart,
 } from "lucide-react";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";
@@ -29,6 +30,39 @@ interface DetailProyekPageProps {
     id: string;
   }>;
 }
+
+export async function generateMetadata({ params }: DetailProyekPageProps) {
+  const { id } = await params;
+
+  const proyek = await prisma.proyekTani.findUnique({
+    where: { id },
+    select: {
+      namaProyek: true,
+      deskripsi: true,
+      image: true,
+      petani: {
+        select: { name: true }
+      }
+    }
+  });
+
+  if (!proyek) {
+    return {
+      title: "Proyek Tidak Ditemukan - Nandur",
+    };
+  }
+
+  return {
+    title: `${proyek.namaProyek} - ${proyek.petani.name} | Proyek Tani`,
+    description: proyek.deskripsi,
+    openGraph: {
+      title: proyek.namaProyek,
+      description: proyek.deskripsi,
+      images: proyek.image ? [proyek.image] : [],
+    },
+  };
+}
+
 
 export default async function DetailProyekPage({
   params,
@@ -63,9 +97,7 @@ export default async function DetailProyekPage({
       },
       produk: {
         where: {
-          stok: {
-            gt: 0,
-          },
+          status: "TERSEDIA", // Hanya tampilkan produk yang tersedia
         },
         orderBy: {
           createdAt: "desc",
@@ -125,7 +157,7 @@ export default async function DetailProyekPage({
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex justify-between items-center py-5">
             <Link
-              href={`petani/${proyek.petani.username}`}
+              href={`/petani/${proyek.petani.username}`}
               className="flex items-center space-x-2 group"
             >
               <ArrowLeft className="h-5 w-5 text-green-100 group-hover:-translate-x-1 transition-transform" />
@@ -138,7 +170,11 @@ export default async function DetailProyekPage({
               <button className="p-2 hover:bg-red-500 rounded-lg transition-colors">
                 <Heart className="h-5 w-5 text-green-100" />
               </button>
-              <ShareButton text="share projek ini" className="text-green-100 hover:text-green-900" title={proyek.namaProyek} />
+              <ShareButton 
+                text="share projek ini" 
+                className="text-green-100 hover:text-green-900" 
+                title={proyek.namaProyek} 
+              />
             </div>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">

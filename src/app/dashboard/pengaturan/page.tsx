@@ -18,12 +18,12 @@ export default async function UpdateProyekPage() {
   });
 
   const clientUser = {
-    id: user?.id,
-    name: user?.name,
+    id: user!.id,
+    name: user!.name,
     bio: user?.bio ?? "",
-    numberPhone: user?.numberPhone ?? "",
+    numberPhone: user?.numberPhone ?? "" ,
     lokasi: user?.lokasi ?? "",
-    image: user?.image ?? "",
+    image: user?.image ?? "" ,
   };
 
   if (!user) {

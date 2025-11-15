@@ -9,7 +9,7 @@ interface UserData {
   name: string;
   bio: string;
   image: string;
-  lokasi: string;
+  lokasi: string | null;
   numberPhone: string;
 }
 

@@ -6,14 +6,21 @@ import { useRouter } from "next/navigation";
 import { Loader2, Trash2, ImageIcon, DollarSign, Package } from "lucide-react";
 import FileDropzone from "./FileDropZone";
 
+enum StatusProduk {
+  TERJUAL = "TERJUAL",
+  TERSEDIA = "TERSEDIA",
+  BELUM_TERSEDIA = "BELUM_TERSEDIA",
+}
+
 interface EditProdukFormProps {
   produkId: string;
   produk: {
     namaProduk: string;
     deskripsi: string;
     harga: number;
-    stok: number;
+    unit: string;
     gambarProduk: string[];
+    status?: StatusProduk;
   };
 }
 
@@ -23,7 +30,8 @@ export default function EditProdukForm({ produkId, produk }: EditProdukFormProps
     namaProduk: produk.namaProduk,
     deskripsi: produk.deskripsi || "",
     harga: produk.harga.toString(),
-    stok: produk.stok.toString(),
+    unit: produk.unit,
+    status: produk.status ?? StatusProduk.TERSEDIA,
   });
   
   const [existingImages, setExistingImages] = useState<string[]>(produk.gambarProduk || []);
@@ -34,7 +42,7 @@ export default function EditProdukForm({ produkId, produk }: EditProdukFormProps
   const [success, setSuccess] = useState<string | null>(null);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setProdukData((prev) => ({ ...prev, [name]: value }));
@@ -126,8 +134,8 @@ export default function EditProdukForm({ produkId, produk }: EditProdukFormProps
       return;
     }
 
-    if (!produkData.stok || Number(produkData.stok) < 0) {
-      setError("Stok tidak boleh negatif.");
+    if (!produkData.unit) {
+      setError("Unit tidak boleh kosong");
       setIsLoading(false);
       return;
     }
@@ -155,7 +163,8 @@ export default function EditProdukForm({ produkId, produk }: EditProdukFormProps
         namaProduk: produkData.namaProduk,
         deskripsi: produkData.deskripsi,
         harga: Number(produkData.harga),
-        stok: Number(produkData.stok),
+        unit: produkData.unit,
+        status: produkData.status as StatusProduk,
         gambarProduk: finalGambarProduk,
       };
 
@@ -255,7 +264,7 @@ export default function EditProdukForm({ produkId, produk }: EditProdukFormProps
         />
       </div>
 
-      {/* Harga dan Stok */}
+      {/* Harga dan Unit */}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -279,23 +288,40 @@ export default function EditProdukForm({ produkId, produk }: EditProdukFormProps
 
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Stok <span className="text-red-500">*</span>
+            Unit <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <Package className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500" size={18} />
             <input
-              type="number"
-              name="stok"
-              value={produkData.stok}
+              type="text"
+              name="unit"
+              value={produkData.unit}
               onChange={handleInputChange}
               required
-              min="0"
-              placeholder="100"
+              placeholder="kg"
               className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
               disabled={isLoading}
             />
           </div>
         </div>
+      </div>
+
+      {/* Status Produk (enum) */}
+      <div>
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          Status Produk <span className="text-red-500">*</span>
+        </label>
+        <select
+          name="status"
+          value={produkData.status}
+          onChange={handleInputChange}
+          disabled={isLoading}
+          className="w-full pl-3 pr-3 py-3 rounded-xl border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+        >
+          <option value={StatusProduk.TERSEDIA}>Tersedia</option>
+          <option value={StatusProduk.TERJUAL}>Terjual</option>
+          <option value={StatusProduk.BELUM_TERSEDIA}>Belum Tersedia</option>
+        </select>
       </div>
 
       {/* Gambar Produk */}

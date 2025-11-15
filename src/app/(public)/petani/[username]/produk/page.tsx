@@ -23,7 +23,9 @@ export default async function ProdukPage({
           deskripsi: true,
           harga: true,
           gambarProduk: true,
-          stok: true,
+          status: true,
+          unit: true,
+          createdAt: true,
         },
       },
     },
@@ -42,7 +44,7 @@ export default async function ProdukPage({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {petani.produks.map((produk) => (
           <ProductCard key={produk.id} produk={produk} />
         ))}

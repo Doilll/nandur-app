@@ -20,6 +20,37 @@ import StatItem from "@/components/StatItem";
 import ContactItem from "@/components/ContactItem";
 import ShareButton from "@/components/ShareButton";
 
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
+  const { username } = await params;
+
+  const user = await prisma.user.findUnique({
+    where: { username },
+    select: {
+      name: true,
+      username: true,
+      bio: true,
+      image: true
+    }
+  });
+
+  if (!user) {
+    return {
+      title: "Petani Tidak Ditemukan - Tandur"
+    };
+  }
+
+  return {
+    title: `${user.name} (@${user.username}) - Profil Petani | Nandur`,
+    description: user.bio ?? `Profil petani ${user.name} di Nandur.`,
+    openGraph: {
+      title: user.name,
+      description: user.bio ?? "",
+      images: user.image ? [user.image] : [],
+    },
+  };
+}
+
+
 export default async function ProfilLayout({
   children,
   params,

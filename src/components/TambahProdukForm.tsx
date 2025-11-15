@@ -30,7 +30,7 @@ export default function TambahProdukForm({
     namaProduk: "",
     deskripsi: "",
     harga: "",
-    stok: "",
+    unit: "",
     proyekTaniId: proyekId || "",
   });
 
@@ -164,8 +164,8 @@ export default function TambahProdukForm({
       return;
     }
 
-    if (!produkData.stok || Number(produkData.stok) < 0) {
-      setError("Stok tidak boleh negatif.");
+    if (!produkData.unit.trim()) {
+      setError("Unit harus diisi.");
       setIsLoading(false);
       return;
     }
@@ -187,7 +187,7 @@ export default function TambahProdukForm({
         namaProduk: produkData.namaProduk,
         deskripsi: produkData.deskripsi,
         harga: Number(produkData.harga),
-        stok: Number(produkData.stok),
+        unit: produkData.unit,
         gambarProduk,
         proyekTaniId: produkData.proyekTaniId,
       };
@@ -212,7 +212,7 @@ export default function TambahProdukForm({
         namaProduk: "",
         deskripsi: "",
         harga: "",
-        stok: "",
+        unit: "",
         proyekTaniId: "",
       });
 
@@ -329,7 +329,7 @@ export default function TambahProdukForm({
         />
       </div>
 
-      {/* Harga dan Stok */}
+      {/* Harga dan Unit */}
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -356,7 +356,7 @@ export default function TambahProdukForm({
 
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Stok <span className="text-red-500">*</span>
+            Unit <span className="text-red-500">*</span>
           </label>
           <div className="relative">
             <Package
@@ -364,13 +364,12 @@ export default function TambahProdukForm({
               size={18}
             />
             <input
-              type="number"
-              name="stok"
-              value={produkData.stok}
+              type="text"
+              name="unit"
+              value={produkData.unit}
               onChange={handleInputChange}
               required
-              min="0"
-              placeholder="100"
+              placeholder="kg"
               className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
               disabled={isLoading}
             />

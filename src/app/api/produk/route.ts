@@ -12,13 +12,13 @@ export async function POST(req: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { namaProduk, deskripsi, harga, stok, gambarProduk, proyekTaniId } =
+  const { namaProduk, deskripsi, harga, gambarProduk, proyekTaniId, unit } =
     await req.json();
   if (
     !namaProduk ||
     !deskripsi ||
     !harga ||
-    !stok ||
+    !unit ||
     !gambarProduk ||
     !proyekTaniId
   ) {
@@ -37,9 +37,9 @@ export async function POST(req: Request): Promise<NextResponse> {
         namaProduk,
         deskripsi,
         harga,
-        stok,
         gambarProduk,
         proyekTaniId,
+        unit,
         petaniId: user.id,
       },
     });

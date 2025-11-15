@@ -12,8 +12,13 @@ import Link from "next/link";
 import FeatureCard from "@/components/FeatureCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
-export default function TentangPage() {
+export default async function LandingPage() {
+  const session = auth.api.getSession({ headers: await headers() });
+  
+
   return (
     <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100">
       {/* Navigation */}
