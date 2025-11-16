@@ -28,14 +28,14 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <StatCard
             icon={<Sprout className="h-6 w-6" />}
             title="Proyek Aktif"
             value="12"
             change="+2"
             trend="up"
-            href="/dashboard/projects"
+            href="/dashboard/proyek"
           />
           <StatCard
             icon={<Package className="h-6 w-6" />}
@@ -43,7 +43,7 @@ export default function DashboardPage() {
             value="45"
             change="+5"
             trend="up"
-            href="/dashboard/products"
+            href="/dashboard/produk"
           />
           <StatCard
             icon={<MessageSquare className="h-6 w-6" />}
@@ -52,14 +52,6 @@ export default function DashboardPage() {
             change="+12"
             trend="up"
             href="/dashboard/feed"
-          />
-          <StatCard
-            icon={<Users className="h-6 w-6" />}
-            title="Pengikut"
-            value="356"
-            change="+23"
-            trend="up"
-            href="/dashboard/analytics"
           />
         </div>
 
@@ -72,7 +64,7 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">Proyek Terkini</h2>
                 <Link 
-                  href="/dashboard/projects"
+                  href="/dashboard/proyek"
                   className="text-green-600 hover:text-green-700 font-medium text-sm flex items-center space-x-1"
                 >
                   <span>Lihat Semua</span>
@@ -86,21 +78,18 @@ export default function DashboardPage() {
                   progress={75}
                   status="PANEN"
                   date="15 Nov 2024"
-                  members={3}
                 />
                 <ProjectItem
                   name="Cabai Rawit Greenhouse"
                   progress={30}
                   status="PEMELIHARAAN"
                   date="20 Des 2024"
-                  members={2}
                 />
                 <ProjectItem
                   name="Tomat Hidroponik"
                   progress={90}
                   status="PANEN"
                   date="10 Nov 2024"
-                  members={4}
                 />
               </div>
             </div>

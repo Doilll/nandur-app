@@ -16,7 +16,6 @@ import {
   ArrowRight,
   Heart,
   BarChart3,
-  ShoppingCart,
 } from "lucide-react";
 import { format } from "date-fns";
 import { id as idLocale } from "date-fns/locale";

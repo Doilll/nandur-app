@@ -5,13 +5,11 @@ export default function ProjectItem({
   progress,
   status,
   date,
-  members,
 }: {
   name: string;
   progress: number;
   status: string;
   date: string;
-  members: number;
 }) {
   const statusColor =
     {
@@ -44,10 +42,6 @@ export default function ProjectItem({
             {status}
           </span>
           <span>{date}</span>
-          <span className="flex items-center space-x-1">
-            <Users className="h-3 w-3" />
-            <span>{members} anggota</span>
-          </span>
         </div>
       </div>
     </div>
