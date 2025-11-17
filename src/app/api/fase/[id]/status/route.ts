@@ -6,7 +6,9 @@ import { auth } from "@/lib/auth";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{
+    id: string;
+  }> }
 ): Promise<NextResponse> {
   const { id } = await params;
   const session = await auth.api.getSession({ headers: req.headers });
@@ -16,11 +18,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const { status } = await req.json();
-  //   enum FaseStatus {
-  //   BELUM_DIMULAI
-  //   BERJALAN
-  //   SELESAI
-  // }
+ 
 
   if (!status) {
     return NextResponse.json(
