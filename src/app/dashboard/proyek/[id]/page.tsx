@@ -41,6 +41,7 @@ import { Button } from "@/components/ui/button";
 import TambahFaseForm from "@/components/TambahFaseForm";
 import TambahProdukModal from "@/components/TambahProdukModal";
 import ProductCardDashboard from "@/components/ProductCardDashboard";
+import { StatusProduk } from "@prisma/client";
 
 interface ProyekTani {
   id: string;
@@ -79,6 +80,8 @@ interface Produk {
   stok: number;
   gambarProduk: string[];
   createdAt: Date;
+  unit: string;
+  status: StatusProduk;
 }
 
 export default function ProjectDetailPage() {
@@ -95,10 +98,6 @@ export default function ProjectDetailPage() {
   const [open, setOpen] = useState(false);
 
   const [isTransitioning, startTransition] = useTransition();
-
-  useEffect(() => {
-    fetchProyek();
-  }, [id]);
 
   const fetchProyek = async () => {
     try {
@@ -118,6 +117,11 @@ export default function ProjectDetailPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchProyek();
+  }, [id]);
+
 
   const handleStatusUpdate = async () => {
     if (!proyek) return;
