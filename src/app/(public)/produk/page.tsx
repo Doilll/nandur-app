@@ -1,10 +1,8 @@
 // src/app/produk/page.tsx
-"use client";
-
-import { useState, useEffect } from "react";
-import { Search, Filter, Package, Leaf, Users, MapPin } from "lucide-react";
-import ProductCardKatalog from "@/components/ProductCardKatalog";
-
+import { prisma } from "@/lib/prisma";
+import { Metadata } from "next";
+import { Package, Leaf, Users, MapPin } from "lucide-react";
+import ProdukSearchClient from "@/components/ProductSearchClient";
 
 interface Petani {
   name: string;
@@ -31,108 +29,121 @@ interface Produk {
   proyekTani: ProyekTani | null;
 }
 
-interface ApiResponse {
-  success: boolean;
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-  data: Produk[];
+interface SearchParams {
+  search?: string;
+  page?: string;
+  lokasi?: string;
+  harga_min?: string;
+  harga_max?: string;
 }
 
-export default function KatalogProdukPage() {
-  const [produk, setProduk] = useState<Produk[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [selectedPetani, setSelectedPetani] = useState("");
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [showFilters, setShowFilters] = useState(false);
+interface KatalogProdukPageProps {
+  searchParams: Promise<SearchParams>;
+}
 
-  const fetchProduk = async (
-    pageNum: number = 1, 
-    searchQuery: string = "", 
-    petaniFilter: string = "", 
-  ) => {
-    try {
-      setLoading(true);
-      setError(null);
+export const metadata: Metadata = {
+  title: "Katalog Produk - Tandur",
+  description: "Temukan produk pertanian berkualitas langsung dari petani. Dapatkan hasil panen segar dengan harga terbaik.",
+};
 
-      const params = new URLSearchParams({
-        page: pageNum.toString(),
-        limit: "12",
-        ...(searchQuery && { search: searchQuery }),
-        ...(petaniFilter && { petani: petaniFilter }),
-      });
+export default async function KatalogProdukPage({ searchParams }: KatalogProdukPageProps) {
+  const params = await searchParams;
+  const search = params.search || "";
+  const lokasi = params.lokasi || "";
+  const hargaMin = params.harga_min ? Number(params.harga_min) : undefined;
+  const hargaMax = params.harga_max ? Number(params.harga_max) : undefined;
+  const page = Number(params.page) || 1;
+  const limit = 12;
 
-      const response = await fetch(`/api/produk?${params}`);
-      const result: ApiResponse = await response.json();
+  // Build where clause
+  const whereClause: any = {
+    status: "TERSEDIA", // Only show available products
+  };
 
-      if (!response.ok) {
-        throw new Error("Gagal memuat data produk");
-      }
+  // Search filter
+  if (search) {
+    whereClause.OR = [
+      { namaProduk: { contains: search, mode: "insensitive" } },
+      { deskripsi: { contains: search, mode: "insensitive" } },
+    ];
+  }
 
-      if (result.success) {
-        setProduk(result.data);
-        setPage(result.page);
-        setTotalPages(result.totalPages);
-        setTotal(result.total);
-      }
-    } catch (err) {
-      console.error("Error fetching produk:", err);
-      setError(err instanceof Error ? err.message : "Terjadi kesalahan");
-    } finally {
-      setLoading(false);
+  // Location filter
+  if (lokasi) {
+    whereClause.petani = {
+      lokasi: { contains: lokasi, mode: "insensitive" }
+    };
+  }
+
+  // Price range filter
+  if (hargaMin !== undefined || hargaMax !== undefined) {
+    whereClause.harga = {};
+    if (hargaMin !== undefined) {
+      whereClause.harga.gte = hargaMin;
     }
-  };
+    if (hargaMax !== undefined) {
+      whereClause.harga.lte = hargaMax;
+    }
+  }
 
-  // Initial load
-  useEffect(() => {
-    fetchProduk();
-  }, []);
+  // Fetch initial data on server
+  const [produk, total] = await Promise.all([
+    prisma.produk.findMany({
+      where: whereClause,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        namaProduk: true,
+        harga: true,
+        unit: true,
+        gambarProduk: true,
+        deskripsi: true,
+        createdAt: true,
+        status: true,
+        petani: {
+          select: {
+            name: true,
+            username: true,
+            image: true,
+            lokasi: true,
+          },
+        },
+        proyekTani: {
+          select: {
+            id: true,
+            namaProyek: true,
+          },
+        },
+      },
+    }),
+    prisma.produk.count({ where: whereClause }),
+  ]);
 
-  // Handle search with debounce
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPage(1);
-      fetchProduk(1, search, selectedPetani);
-    }, 500);
+  const totalPages = Math.ceil(total / limit);
 
-    return () => clearTimeout(timer);
-  }, [search, selectedPetani]);
-
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    fetchProduk(newPage, search, selectedPetani);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPage(1);
-    fetchProduk(1, search, selectedPetani);
-  };
-
-  const handleReset = () => {
-    setSearch("");
-    setSelectedPetani("");
-    setPage(1);
-    fetchProduk(1, "", "");
-  };
-
-  const getUniquePetani = () => {
-    const petaniSet = new Set();
-    return produk
-      .filter(p => {
-        if (petaniSet.has(p.petani.username)) return false;
-        petaniSet.add(p.petani.username);
-        return true;
-      })
-      .map(p => p.petani);
-  };
-
+  // Get unique locations for filter
+  const uniqueLocations = await prisma.user.findMany({
+    where: {
+      produks: {
+        some: {
+          status: "TERSEDIA"
+        }
+      }
+    },
+    select: {
+      lokasi: true,
+    },
+    distinct: ['lokasi'],
+  }).then(users => 
+    users
+      .map(u => u.lokasi)
+      .filter(Boolean)
+      .sort()
+  );
 
   return (
     <div className="min-h-screen bg-linear-to-b from-green-50 to-white">
@@ -152,194 +163,20 @@ export default function KatalogProdukPage() {
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Search and Stats Section */}
-        <div className="mb-12">
+        {/* Pass initial data to client component */}
+        <ProdukSearchClient 
+          initialProduk={produk}
+          initialTotal={total}
+          initialPage={page}
+          initialTotalPages={totalPages}
+          initialSearch={search}
+          initialLokasi={lokasi}
+          initialHargaMin={hargaMin?.toString() || ""}
+          initialHargaMax={hargaMax?.toString() || ""}
+          availableLocations={uniqueLocations as string[]}
+        />
 
-          {/* Search and Filters */}
-          <div className="bg-white rounded-2xl shadow-lg border border-green-200 p-6">
-            <form onSubmit={handleSearch} className="space-y-4">
-              {/* Search Bar */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="Cari produk berdasarkan nama atau deskripsi..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-                  />
-                </div>
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setShowFilters(!showFilters)}
-                    className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-6 py-4 rounded-xl font-semibold transition-colors flex items-center gap-2"
-                  >
-                    <Filter className="w-5 h-5" />
-                    Filter
-                  </button>
-                  <button
-                    type="submit"
-                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-xl font-semibold transition-colors flex items-center gap-2"
-                  >
-                    <Search className="w-5 h-5" />
-                    Cari
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleReset}
-                    className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-6 py-4 rounded-xl font-semibold transition-colors"
-                  >
-                    Reset
-                  </button>
-                </div>
-              </div>
-
-              {/* Filters */}
-              {showFilters && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Filter Petani
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Username petani..."
-                      value={selectedPetani}
-                      onChange={(e) => setSelectedPetani(e.target.value)}
-                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-                    />
-                  </div>
-                </div>
-              )}
-              
-              {/* Search Info */}
-              {(search || selectedPetani) && (
-                <div className="text-sm text-gray-600">
-                  Menampilkan hasil untuk: 
-                  {search && <strong> "{search}"</strong>}
-                  {selectedPetani && <span> • Petani: <strong>{selectedPetani}</strong></span>}
-                  <span className="ml-2 text-green-600">
-                    ({total} produk ditemukan)
-                  </span>
-                </div>
-              )}
-            </form>
-          </div>
-        </div>
-
-        {/* Loading State */}
-        {loading && (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
-            <span className="ml-3 text-gray-600">Memuat data produk...</span>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && !loading && (
-          <div className="bg-red-50 border border-red-200 rounded-2xl p-8 text-center">
-            <div className="text-red-600 text-lg font-semibold mb-2">
-              Gagal memuat data
-            </div>
-            <p className="text-red-500 mb-4">{error}</p>
-            <button
-              onClick={() => fetchProduk(page, search, selectedPetani)}
-              className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors"
-            >
-              Coba Lagi
-            </button>
-          </div>
-        )}
-
-        {/* Results */}
-        {!loading && !error && (
-          <>
-            {/* Products Grid */}
-            {produk.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-                {produk.map((p) => (
-                  <ProductCardKatalog
-                    key={p.id}
-                    produk={p}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-12 text-center">
-                <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Produk tidak ditemukan
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  {search || selectedPetani
-                    ? `Tidak ada produk yang sesuai dengan pencarian`
-                    : "Belum ada produk yang tersedia"}
-                </p>
-                {(search || selectedPetani) && (
-                  <button
-                    onClick={handleReset}
-                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold transition-colors"
-                  >
-                    Lihat Semua Produk
-                  </button>
-                )}
-              </div>
-            )}
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center space-x-2">
-                <button
-                  onClick={() => handlePageChange(page - 1)}
-                  disabled={page === 1}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Sebelumnya
-                </button>
-
-                {/* Page Numbers */}
-                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNum;
-                  if (totalPages <= 5) {
-                    pageNum = i + 1;
-                  } else if (page <= 3) {
-                    pageNum = i + 1;
-                  } else if (page >= totalPages - 2) {
-                    pageNum = totalPages - 4 + i;
-                  } else {
-                    pageNum = page - 2 + i;
-                  }
-
-                  return (
-                    <button
-                      key={pageNum}
-                      onClick={() => handlePageChange(pageNum)}
-                      className={`w-10 h-10 rounded-lg font-semibold transition-colors ${
-                        page === pageNum
-                          ? "bg-green-600 text-white"
-                          : "border border-gray-300 hover:bg-gray-50 text-gray-700"
-                      }`}
-                    >
-                      {pageNum}
-                    </button>
-                  );
-                })}
-
-                <button
-                  onClick={() => handlePageChange(page + 1)}
-                  disabled={page === totalPages}
-                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                >
-                  Selanjutnya
-                </button>
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Info Section */}
+        {/* Info Section - Static content */}
         <section className="mt-16 bg-white rounded-2xl shadow-lg border border-green-200 p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
             Mengapa Berbelanja Langsung dari Petani?

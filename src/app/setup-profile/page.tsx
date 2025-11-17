@@ -4,6 +4,8 @@ import { useState } from "react";
 import { User, Phone, MapPin, Trash2, ImageIcon, Loader2 } from "lucide-react";
 import FileDropzone from "@/components/FileDropZone";
 import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+
 
 interface ProfileData {
   username: string;
@@ -27,6 +29,8 @@ export default function App() {
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -132,7 +136,7 @@ export default function App() {
         setPendingFile(null);
         setError("Profil berhasil diperbarui!"); // Menggunakan error state untuk notifikasi sukses
         // Redirect to dashboard after successful profile setup
-        redirect("/dashboard");
+        router.push("/dashboard");
       } else {
         throw new Error(result.error || "Gagal memperbarui profil.");
       }

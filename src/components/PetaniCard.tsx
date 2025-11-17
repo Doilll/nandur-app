@@ -6,7 +6,7 @@ import Image from "next/image";
 interface PetaniCardProps {
   id: string;
   name: string;
-  username: string;
+  username?: string;
   lokasi?: string;
   image?: string;
   totalProyek?: number;

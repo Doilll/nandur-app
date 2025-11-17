@@ -1,5 +1,4 @@
 // src/app/api/petani/route.ts
-
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -8,12 +7,12 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
 
     const page = Number(searchParams.get("page")) || 1;
-    const limit = Number(searchParams.get("limit")) || 10;
+    const limit = Number(searchParams.get("limit")) || 12;
     const search = searchParams.get("search") || "";
 
     const skip = (page - 1) * limit;
 
-    const whereClauses: any= search
+    const whereClause: any = search
       ? {
           OR: [
             { name: { contains: search, mode: "insensitive" } },
@@ -25,7 +24,7 @@ export async function GET(req: Request) {
 
     const [data, total] = await Promise.all([
       prisma.user.findMany({
-        where: whereClauses,
+        where: whereClause,
         skip,
         take: limit,
         orderBy: {
@@ -46,7 +45,7 @@ export async function GET(req: Request) {
           },
         },
       }),
-      prisma.user.count({ where: whereClauses}),
+      prisma.user.count({ where: whereClause }),
     ]);
 
     return NextResponse.json({

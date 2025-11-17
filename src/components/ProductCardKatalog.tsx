@@ -6,7 +6,7 @@ import { StatusProduk } from "@prisma/client";
 
 interface Petani {
   name: string;
-  username: string;
+  username: string | null;
   image: string | null;
   lokasi: string | null;
 }

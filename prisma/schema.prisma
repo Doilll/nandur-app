@@ -65,7 +65,7 @@ model FaseProyek {
 }
 
 model Produk {
-  id           String     @id @default(cuid())
+  id           String       @id @default(cuid())
   namaProduk   String
   deskripsi    String
   harga        Float
@@ -73,9 +73,9 @@ model Produk {
   unit         String
   gambarProduk String[]
   proyekTaniId String
-  proyekTani   ProyekTani @relation(fields: [proyekTaniId], references: [id], onDelete: Cascade)
+  proyekTani   ProyekTani   @relation(fields: [proyekTaniId], references: [id], onDelete: Cascade)
   petaniId     String
-  petani       User       @relation(fields: [petaniId], references: [id], onDelete: Cascade)
+  petani       User         @relation(fields: [petaniId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

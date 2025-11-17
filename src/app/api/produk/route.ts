@@ -57,6 +57,7 @@ export async function POST(req: Request): Promise<NextResponse> {
   }
 }
 
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -64,14 +65,17 @@ export async function GET(req: Request) {
     const page = Number(searchParams.get("page")) || 1;
     const limit = Number(searchParams.get("limit")) || 12;
     const search = searchParams.get("search") || "";
-    const petani = searchParams.get("petani") || null;
-    const proyek = searchParams.get("proyek") || null;
+    const lokasi = searchParams.get("lokasi") || "";
+    const hargaMin = searchParams.get("harga_min");
+    const hargaMax = searchParams.get("harga_max");
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const where: any = {
+      status: "TERSEDIA", // Only show available products
+    };
 
-    // Search
+    // Search filter
     if (search) {
       where.OR = [
         { namaProduk: { contains: search, mode: "insensitive" } },
@@ -79,16 +83,22 @@ export async function GET(req: Request) {
       ];
     }
 
-    // Filter by username petani
-    if (petani) {
+    // Location filter
+    if (lokasi) {
       where.petani = {
-        username: petani,
+        lokasi: { contains: lokasi, mode: "insensitive" }
       };
     }
 
-    // Filter by id proyek tani
-    if (proyek) {
-      where.proyekTaniId = proyek;
+    // Price range filter
+    if (hargaMin || hargaMax) {
+      where.harga = {};
+      if (hargaMin) {
+        where.harga.gte = Number(hargaMin);
+      }
+      if (hargaMax) {
+        where.harga.lte = Number(hargaMax);
+      }
     }
 
     const [data, total] = await Promise.all([
