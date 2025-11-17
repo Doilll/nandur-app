@@ -5,12 +5,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Trash2, ImageIcon, DollarSign, Package } from "lucide-react";
 import FileDropzone from "./FileDropZone";
+import { StatusProduk } from "@prisma/client";
 
-enum StatusProduk {
-  TERJUAL = "TERJUAL",
-  TERSEDIA = "TERSEDIA",
-  BELUM_TERSEDIA = "BELUM_TERSEDIA",
-}
 
 interface EditProdukFormProps {
   produkId: string;
