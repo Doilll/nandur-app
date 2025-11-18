@@ -3,7 +3,7 @@ import { inferAdditionalFields } from "better-auth/client/plugins";
 import type { auth } from "@/lib/auth";
 
 export const authClient = createAuthClient({
-  baseURL: "http://localhost:3000/api/auth",
+  baseURL: process.env.BASE_URL!,
   plugins: [
     inferAdditionalFields<typeof auth>(),
   ],

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, Filter, Package } from "lucide-react";
 import ProductCardKatalog from "./ProductCardKatalog";
+import { StatusProduk } from "@prisma/client";
 
 interface Petani {
   name: string;
@@ -26,7 +27,7 @@ interface Produk {
   gambarProduk: string[];
   deskripsi: string;
   createdAt: any;
-  status: "TERSEDIA" | "TERJUAL" | "BELUM_TERSEDIA";
+  status: StatusProduk;
   petani: Petani;
   proyekTani: ProyekTani | null;
 }
@@ -177,28 +178,30 @@ export default function ProdukSearchClient({
                   className="w-full pl-12 pr-4 py-4 rounded-xl border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
                 />
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-col sm:flex-row w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={() => setShowFilters(!showFilters)}
-                  className="border border-gray-300 hover:bg-gray-50 text-gray-700 px-6 py-4 rounded-xl font-semibold transition-colors flex items-center gap-2"
+                  className="w-full sm:w-auto border border-gray-300 hover:bg-gray-50 text-gray-700 px-6 py-4 rounded-xl font-semibold transition-colors flex items-center gap-2"
                 >
                   <Filter className="w-5 h-5" />
                   Filter
                 </button>
+
                 <button
                   type="submit"
                   disabled={loading}
-                  className="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-6 py-4 rounded-xl font-semibold transition-colors flex items-center gap-2"
+                  className="w-full sm:w-auto bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-6 py-4 rounded-xl font-semibold transition-colors flex items-center gap-2"
                 >
                   <Search className="w-5 h-5" />
                   {loading ? "Mencari..." : "Cari"}
                 </button>
+
                 <button
                   type="button"
                   onClick={handleResetAndSearch}
                   disabled={loading}
-                  className="border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-gray-700 px-6 py-4 rounded-xl font-semibold transition-colors"
+                  className="w-full sm:w-auto border border-gray-300 hover:bg-gray-50 disabled:opacity-50 text-gray-700 px-6 py-4 rounded-xl font-semibold transition-colors"
                 >
                   Reset
                 </button>

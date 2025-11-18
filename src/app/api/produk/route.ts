@@ -2,7 +2,6 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { tr } from "date-fns/locale";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request): Promise<NextResponse> {

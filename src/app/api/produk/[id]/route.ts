@@ -4,9 +4,13 @@ import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{
-    id: string;
-  }> }
+  {
+    params,
+  }: {
+    params: Promise<{
+      id: string;
+    }>;
+  }
 ): Promise<NextResponse> {
   const { id } = await params;
 
@@ -28,9 +32,13 @@ export async function GET(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{
-    id: string;
-  }> }
+  {
+    params,
+  }: {
+    params: Promise<{
+      id: string;
+    }>;
+  }
 ): Promise<NextResponse> {
   const session = await auth.api.getSession({ headers: req.headers });
   const user = session?.user;
@@ -58,9 +66,13 @@ export async function DELETE(
 
 export async function PUT(
   req: Request,
-  { params }: { params: Promise<{
-    id: string;
-  }> }
+  {
+    params,
+  }: {
+    params: Promise<{
+      id: string;
+    }>;
+  }
 ): Promise<NextResponse> {
   const session = await auth.api.getSession({ headers: req.headers });
   const user = session?.user;
@@ -70,8 +82,16 @@ export async function PUT(
   }
   const { id } = await params;
 
-  const { namaProduk, deskripsi, harga, unit, gambarProduk, status } = await req.json();
-  if (!namaProduk || !deskripsi || !harga || !unit || !gambarProduk || !status) {
+  const { namaProduk, deskripsi, harga, unit, gambarProduk, status } =
+    await req.json();
+  if (
+    !namaProduk ||
+    !deskripsi ||
+    !harga ||
+    !unit ||
+    !gambarProduk ||
+    !status
+  ) {
     return NextResponse.json(
       {
         error:
@@ -92,7 +112,7 @@ export async function PUT(
         harga,
         unit,
         gambarProduk,
-        status
+        status,
       },
     });
     return NextResponse.json({ message: "Produk berhasil diupdate", produk });

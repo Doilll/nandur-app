@@ -17,6 +17,7 @@ import { prisma } from "@/lib/prisma";
 export default async function LandingPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   
+  // Halaman landing untuk user yang belum login
   if (!session) {
     return <LandingPublic />
   }
@@ -33,13 +34,13 @@ export default async function LandingPage() {
     }),
   ]);
 
-  // Halaman landing untuk user yang sudah loginlogin
+  // Halaman landing untuk user yang sudah login
   return (
       <div className="min-h-screen bg-linear-to-br from-green-50 to-emerald-100">
         <Navbar />
 
         {/* Welcome Section for Logged In Users */}
-        <section className="pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <section className="pt-10 pb-16 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
             <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12 border border-green-100">
               <div className="flex items-center space-x-4 mb-6">
