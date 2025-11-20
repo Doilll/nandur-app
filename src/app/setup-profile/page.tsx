@@ -6,6 +6,7 @@ import FileDropzone from "@/components/FileDropZone";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
 
 interface ProfileData {
   username: string;
@@ -141,6 +142,7 @@ export default function App() {
         })
         router.push("/");
       } else {
+        toast.error(result.error || "Gagal memperbarui profil.")
         throw new Error(result.error || "Gagal memperbarui profil.");
       }
     } catch (err) {

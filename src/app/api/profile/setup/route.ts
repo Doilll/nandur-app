@@ -34,7 +34,13 @@ export async function PUT(req: Request): Promise<NextResponse> {
       { message: "Profil berhasil diperbarui", user: updatedProfile },
       { status: 200 }
     );
-  } catch (error) {
+  } catch (error: any) {
+    if (error.code === "P2002") {
+      return NextResponse.json(
+        { error: "username sudah digunakan" },
+        { status: 400 }
+      );
+    }
     console.error("Error updating profile:", error);
     return NextResponse.json(
       { error: "Terjadi kesalahan server" },
