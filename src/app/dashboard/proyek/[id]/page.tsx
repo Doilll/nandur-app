@@ -42,6 +42,7 @@ import TambahFaseForm from "@/components/TambahFaseForm";
 import TambahProdukModal from "@/components/TambahProdukModal";
 import ProductCardDashboard from "@/components/ProductCardDashboard";
 import { StatusProduk } from "@prisma/client";
+import { toast } from "sonner";
 
 interface ProyekTani {
   id: string;
@@ -137,12 +138,15 @@ export default function ProjectDetailPage() {
       });
 
       if (!response.ok) {
+        toast.error("Gagal memperbarui status");
         throw new Error("Gagal memperbarui status");
       }
+
 
       const data = await response.json();
       setProyek(data.proyek);
       setIsEditing(false);
+      toast.success("Status berhasil diperbarui");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Terjadi kesalahan");

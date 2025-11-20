@@ -1,32 +1,32 @@
-// Pastikan Anda mengimpor ikon dari library seperti 'lucide-react' atau lainnya
-// Contoh props: icon, title, description
-const FeatureCard = ({ icon, title, description }: {
+export default function FeatureCard({ icon, title, description, color }: {
   icon: React.ReactNode;
   title: string;
   description: string;
-}) => {
+  color: string;
+}) {
+  const colorClasses = {
+    blue: 'bg-blue-50 border-blue-200',
+    green: 'bg-green-50 border-green-200',
+    purple: 'bg-purple-50 border-purple-200',
+    orange: 'bg-orange-50 border-orange-200'
+  }[color];
+
+  const iconColor = {
+    blue: 'text-blue-600',
+    green: 'text-green-600',
+    purple: 'text-purple-600',
+    orange: 'text-orange-600'
+  }[color];
+
   return (
-    // Struktur Card Utama
-    <div className="bg-white p-8 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 border border-green-100/70">
-      
-      {/* Container Ikon */}
-      <div className="flex items-center justify-center h-16 w-16 mb-6 rounded-xl bg-green-100 text-green-600 shadow-inner">
-        {icon}
+    <div className={`rounded-2xl p-6 border-2 ${colorClasses} hover:shadow-lg transition-all duration-300`}>
+      <div className={`w-12 h-12 rounded-xl ${colorClasses} flex items-center justify-center mb-4`}>
+        <div className={iconColor}>
+          {icon}
+        </div>
       </div>
-      
-      {/* Judul */}
-      <h3 className="text-2xl font-bold text-gray-900 mb-3">
-        {title}
-      </h3>
-      
-      {/* Deskripsi */}
-      <p className="text-gray-600 leading-relaxed">
-        {description}
-      </p>
+      <h3 className="text-xl font-bold text-gray-900 mb-3">{title}</h3>
+      <p className="text-gray-600 leading-relaxed">{description}</p>
     </div>
   );
-};
-
-// Jangan lupa untuk melakukan export di file Anda
-// export default FeatureCard;
-export default FeatureCard;
+}

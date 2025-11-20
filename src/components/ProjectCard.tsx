@@ -3,8 +3,22 @@ import { MapPin, Calendar } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import Link from "next/link";
+import { FaseStatus } from "@prisma/client";
+import { ProyekStatus } from "@prisma/client";
 
-export default function ProjectCard({ proyek }: { proyek: any }) {
+interface ProjectCardProps {
+  id: string;
+  namaProyek: string;
+  deskripsi: string;
+  image: string;
+  lokasi: string;
+  createdAt: Date;
+  status: ProyekStatus;
+  faseProyek: { id: string; status: FaseStatus; namaFase: string; }[];
+}
+
+
+export default function ProjectCard({ proyek, forDashboard }: { proyek: ProjectCardProps, forDashboard?: boolean }) {
   const statusColors = {
     PERSIAPAN: "bg-yellow-100 text-yellow-800",
     PENANAMAN: "bg-blue-100 text-blue-800",
@@ -20,7 +34,7 @@ export default function ProjectCard({ proyek }: { proyek: any }) {
   const progress = totalPhases > 0 ? (completedPhases / totalPhases) * 100 : 0;
 
   return (
-    <Link href={`proyek/${proyek.id}`}>
+    <Link href={forDashboard ? `/dashboard/proyek/${proyek.id}` : `/proyek/${proyek.id}`}>
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300">
         {/* Gambar Proyek */}
         {proyek.image && (

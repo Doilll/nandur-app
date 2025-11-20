@@ -34,7 +34,7 @@ export default async function AuthLayout({
                 height={32}
                 className="rounded-full group-hover:scale-105 transition-transform"
               />
-              <span className="text-2xl font-bold text-green-800">Nandur</span>
+              <span className="text-2xl font-bold text-black group-hover:text-green-700 transition-colors">Nandur</span>
             </Link>
 
             {/* Auth Switch */}

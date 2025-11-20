@@ -31,7 +31,6 @@ export default function DashboardSidebar({ user }: { user: AuthUser }) {
     { name: "Proyek Tani", href: "/dashboard/proyek", icon: Sprout },
     { name: "Produk", href: "/dashboard/produk", icon: Package },
     { name: "Feed", href: "/dashboard/feed", icon: MessageSquare },
-    { name: "Analitik", href: "/dashboard/analytics", icon: BarChart3 },
     { name: "Pengaturan", href: "/dashboard/pengaturan", icon: Settings },
   ];
 

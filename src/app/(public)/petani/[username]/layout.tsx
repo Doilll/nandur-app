@@ -135,7 +135,7 @@ export default async function ProfilLayout({
               <ShareButton
                 title="Tombol share profil"
                 text="Cek Profil petani ini!"
-                className="bg-green-500 text-white/80 hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-full font-medium transition-all flex items-center space-x-2"
+                className="bg-green-500 text-white hover:bg-white/30 backdrop-blur-sm px-6 py-3 rounded-full font-medium transition-all flex items-center space-x-2"
                 icon={<Share2 className="h-5 w-5" />}
                 label="Bagikan"
               />

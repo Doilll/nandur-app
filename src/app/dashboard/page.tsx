@@ -279,7 +279,7 @@ export default async function DashboardOverview() {
               </div>
             </div>
             <div className="text-sm text-gray-500 mt-4">
-              Update terbaru minggu ini
+              Postingan terbaru minggu ini
             </div>
           </div>
 
@@ -288,7 +288,7 @@ export default async function DashboardOverview() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-600">
-                  Total Update
+                  Total Postingan
                 </p>
                 <p className="text-3xl font-bold text-gray-900 mt-2">
                   {totalFeeds}
@@ -306,7 +306,7 @@ export default async function DashboardOverview() {
               href="/dashboard/feeds"
               className="inline-flex items-center gap-1 text-sm text-purple-600 hover:text-purple-700 mt-4 font-medium"
             >
-              Lihat Update
+              Lihat Postingan
               <ArrowUpRight className="w-4 h-4" />
             </Link>
           </div>
@@ -531,7 +531,7 @@ export default async function DashboardOverview() {
                 <Users className="w-6 h-6 text-orange-600" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">Buat Update</h3>
+                <h3 className="font-semibold text-gray-900">Buat Postingan</h3>
                 <p className="text-sm text-gray-600">Bagikan perkembangan</p>
               </div>
             </Link>

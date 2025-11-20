@@ -198,14 +198,14 @@ export default function Navbar() {
         <div className="flex flex-col space-y-3">
           <Link
             href="/login"
-            className="w-full text-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
             onClick={() => setIsMobileMenuOpen(false)}
-          >
+            className="w-full text-center px-4 py-2 bg-white text-green-600 border border-green-600 rounded-md hover:bg-green-50"
+            >
             Masuk
           </Link>
           <Link
+            className="w-full text-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
             href="/register"
-            className="w-full text-center px-4 py-2 bg-white text-green-600 border border-green-600 rounded-md hover:bg-green-50"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Daftar Gratis
@@ -234,19 +234,19 @@ export default function Navbar() {
 
   return (
     <nav className="border-b border-green-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="w-8 h-8 flex items-center justify-center rounded-full bg-green-100">
-              <Image
-                src="/favicon.png"
-                alt="Nandur Logo"
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-            </div>
-            <span className={`text-2xl font-bold ${navTextColor}`}>Nandur</span>
+          <Link href="/" className="flex items-center space-x-2 group">
+            <Image
+              src="/favicon.png"
+              alt="Nandur Logo"
+              width={32}
+              height={32}
+              className="rounded-full group-hover:scale-105 transition-transform"
+            />
+            <span className="text-2xl font-bold text-black group-hover:text-green-700 transition-colors">
+              Nandur
+            </span>
           </Link>
           <div className="hidden md:flex items-center justify-center space-x-8">
             <Link
@@ -268,10 +268,10 @@ export default function Navbar() {
               Petani
             </Link>
             <Link
-              href="/jejak"
+              href="/feed"
               className={`hover:text-green-600 transition-colors ${navTextColor}`}
             >
-              Jejak Tani
+              Komunitas
             </Link>
           </div>
           <div className="hidden md:block">
@@ -317,11 +317,11 @@ export default function Navbar() {
                 Petani
               </Link>
               <Link
-                href="/jejak"
+                href="/feed"
                 className="block py-2 px-3 text-slate-700 hover:text-green-600 hover:bg-slate-50 rounded-md"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Jejak Tani
+                Komunitas
               </Link>
             </div>
 

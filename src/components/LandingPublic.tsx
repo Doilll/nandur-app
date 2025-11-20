@@ -51,9 +51,12 @@ export default function LandingPublic() {
               <span>Mulai Sekarang</span>
               <ArrowRight className="h-5 w-5" />
             </Link>
-            <button className="border-2 border-green-700 text-green-800 px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-50 transition-all">
+            <Link
+              href="/tentang"
+              className="border-2 border-green-700 text-green-800 px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-50 transition-all"
+            >
               Pelajari Lebih Lanjut
-            </button>
+            </Link>
           </div>
 
           {/* Stats */}
@@ -61,22 +64,36 @@ export default function LandingPublic() {
             <div className="text-center">
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
                 <Users className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                <div className="text-3xl font-bold text-gray-900">500+</div>
-                <div className="text-gray-600">Petani Bergabung</div>
+                <div className="text-xl font-bold text-gray-900">
+                  Untuk Petani
+                </div>
+                <div className="text-gray-600">
+                  Bangun portofolio digital dari lahan Anda
+                </div>
               </div>
             </div>
+
             <div className="text-center">
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
                 <TrendingUp className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                <div className="text-3xl font-bold text-gray-900">1.2K+</div>
-                <div className="text-gray-600">Proyek Aktif</div>
+                <div className="text-xl font-bold text-gray-900">
+                  Untuk Pembeli
+                </div>
+                <div className="text-gray-600">
+                  Akses produk dengan asal-usul yang jelas
+                </div>
               </div>
             </div>
+
             <div className="text-center">
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
                 <Leaf className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                <div className="text-3xl font-bold text-gray-900">85%</div>
-                <div className="text-gray-600">Peningkatan Hasil</div>
+                <div className="text-xl font-bold text-gray-900">
+                  Untuk Investor
+                </div>
+                <div className="text-gray-600">
+                  Pantau progres proyek secara transparan
+                </div>
               </div>
             </div>
           </div>
@@ -102,6 +119,7 @@ export default function LandingPublic() {
               icon={<Package className="h-8 w-8" />}
               title="Portofolio Proyek Transparan"
               description="Ubah setiap fase tanam (FaseProyek) menjadi story yang indah. Bangun kepercayaan pembeli dengan bukti nyata dari lahan Anda."
+              color="green"
             />
 
             {/* FITUR 2: Social Feed & Komunitas */}
@@ -109,6 +127,7 @@ export default function LandingPublic() {
               icon={<Users className="h-8 w-8" />}
               title="Agrisocial Community"
               description="Berbagi progres proyek melalui postingan dan belajar real-time dari sesama petani dan pakar melalui fitur post, komentar, dan like"
+              color="blue"
             />
 
             {/* FITUR 3: Pemasaran & Marketplace */}
@@ -116,6 +135,7 @@ export default function LandingPublic() {
               icon={<ShoppingCart className="h-8 w-8" />}
               title="Marketplace Hasil Panen"
               description="Pasarkan hasil panen dengan harga premium. Pembeli dapat melacak asal-usul produk dari Portofolio Proyek Anda."
+              color="orange"
             />
           </div>
         </div>

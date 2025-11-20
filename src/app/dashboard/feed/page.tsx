@@ -26,7 +26,6 @@ export default async function FeedDashboardPage() {
     orderBy: { createdAt: "desc" },
   });
 
-  // Get user's projects for the form
   const userProjects = await prisma.proyekTani.findMany({
     where: { petaniId: user.id },
     select: {
@@ -39,7 +38,6 @@ export default async function FeedDashboardPage() {
   return (
     <div className="min-h-screen bg-green-50 py-10 px-4">
       <div className="max-w-6xl mx-auto space-y-10">
-        {/* Header Section */}
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Rss className="w-8 h-8 text-green-600" />

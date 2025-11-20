@@ -95,9 +95,6 @@ export default async function DetailProyekPage({
         },
       },
       produk: {
-        where: {
-          status: "TERSEDIA", // Hanya tampilkan produk yang tersedia
-        },
         orderBy: {
           createdAt: "desc",
         },
@@ -125,16 +122,16 @@ export default async function DetailProyekPage({
 
   const getStatusColor = (status: string) => {
     const colors = {
-      PERSIAPAN: "bg-yellow-500/10 text-yellow-600 border-yellow-200",
-      PENANAMAN: "bg-blue-500/10 text-blue-600 border-blue-200",
-      PEMELIHARAAN: "bg-orange-500/10 text-orange-600 border-orange-200",
-      PANEN: "bg-green-500/10 text-green-600 border-green-200",
-      SELESAI: "bg-gray-500/10 text-gray-600 border-gray-200",
-    };
-    return (
-      colors[status as keyof typeof colors] || "bg-gray-500/10 text-gray-600"
-    );
+      PERSIAPAN: "bg-yellow-500 text-yellow-800 border-yellow-200",
+      PENANAMAN: "bg-blue-500 text-blue-900 border-blue-200",
+      PEMELIHARAAN: "bg-orange-500 text-orange-900 border-orange-200",
+      PANEN: "bg-green-500 text-green-900 border-green-200",
+      SELESAI: "bg-gray-500 text-gray-900 border-gray-200",
+    } as const;
+    return colors[status as keyof typeof colors] ?? "bg-gray-500/10 text-gray-600 border-gray-200";
   };
+
+  // kelas badge status yang nanti dipakai di JSX
 
   const getStatusIcon = (status: string) => {
     const icons = {
@@ -148,6 +145,7 @@ export default async function DetailProyekPage({
   };
 
   const StatusIcon = getStatusIcon(proyek.status);
+  const StatusColor = getStatusColor(proyek.status);
 
   return (
     <div className="min-h-screen bg-linear-to-b from-white to-green-50">
@@ -171,7 +169,7 @@ export default async function DetailProyekPage({
               </button>
               <ShareButton 
                 text="share projek ini" 
-                className="text-green-100 hover:text-green-900" 
+                className="text-green-100 hover:text-green-900 hover:bg-green-50" 
                 title={proyek.namaProyek} 
               />
             </div>
@@ -180,7 +178,7 @@ export default async function DetailProyekPage({
             <div className="space-y-6">
               <div className="flex items-center space-x-4">
                 <div
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-full backdrop-blur-sm bg-white/10 border border-white/20`}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-full ${StatusColor}`}
                 >
                   <StatusIcon className="h-4 w-4" />
                   <span className="font-medium capitalize text-sm">
@@ -331,15 +329,8 @@ export default async function DetailProyekPage({
               <section className="bg-white rounded-3xl shadow-2xl border border-gray-100 p-8">
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-2xl font-bold text-gray-900">
-                    Hasil Panen
+                    Produk Proyek
                   </h2>
-                  <Link
-                    href={`/petani/${proyek.petani.username}/produk`}
-                    className="text-green-600 hover:text-green-700 font-medium flex items-center space-x-2"
-                  >
-                    <span>Lihat Semua</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

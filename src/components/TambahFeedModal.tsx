@@ -36,7 +36,7 @@ export default function TambahFeedModal({ userProjects }: TambahFeedModalProps) 
           className="bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
-          Buat Update
+          Buat Postingan
         </Button>
       </DialogTrigger>
 
