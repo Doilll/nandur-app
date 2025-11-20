@@ -5,6 +5,7 @@ import { User, Phone, MapPin, Trash2, ImageIcon, Loader2 } from "lucide-react";
 import FileDropzone from "@/components/FileDropZone";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { authClient } from "@/lib/auth-client";
 
 interface ProfileData {
   username: string;
@@ -134,6 +135,10 @@ export default function App() {
         setPendingFile(null);
         setError("Profil berhasil diperbarui!"); // Menggunakan error state untuk notifikasi sukses
         // Redirect to dashboard after successful profile setup
+        await authClient.updateUser({
+          image: finalImageUrl,
+          username: submissionData.username,
+        })
         router.push("/");
       } else {
         throw new Error(result.error || "Gagal memperbarui profil.");

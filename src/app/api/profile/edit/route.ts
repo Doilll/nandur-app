@@ -31,10 +31,12 @@ export async function PUT(req: Request): Promise<NextResponse> {
         lokasi,
       },
     });
+
     return NextResponse.json(
       { message: "Profil berhasil diperbarui", user: updatedProfile },
       { status: 200 }
     );
+    
   } catch (error) {
     console.error("Error updating profile:", error);
     return NextResponse.json(

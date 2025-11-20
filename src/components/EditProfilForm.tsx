@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { User, Phone, MapPin, Trash2, ImageIcon, Loader2 } from "lucide-react";
 import FileDropzone from "@/components/FileDropZone";
+import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
+import { auth } from "@/lib/auth";
 
 interface UserData {
   id: string;
@@ -103,8 +106,14 @@ export default function EditProfilForm({ user }: EditProfilFormProps) {
 
       if (!res.ok) throw new Error(data.error || "Gagal update profil");
 
+      await authClient.updateUser({
+        image: finalImage,
+        name: payload.name,
+      });
+      
       setProfileData((prev) => ({ ...prev, image: finalImage }));
       setNotif("Profil berhasil diperbarui!");
+      toast.success("Profil berhasil diperbarui!");
     } catch (err: any) {
       setNotif(err.message || "Terjadi kesalahan server");
     } finally {
