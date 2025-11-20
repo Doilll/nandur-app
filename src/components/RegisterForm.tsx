@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
