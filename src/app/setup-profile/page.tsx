@@ -3,9 +3,8 @@
 import { useState } from "react";
 import { User, Phone, MapPin, Trash2, ImageIcon, Loader2 } from "lucide-react";
 import FileDropzone from "@/components/FileDropZone";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
-
+import Image from "next/image";
 
 interface ProfileData {
   username: string;
@@ -30,7 +29,6 @@ export default function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -136,7 +134,7 @@ export default function App() {
         setPendingFile(null);
         setError("Profil berhasil diperbarui!"); // Menggunakan error state untuk notifikasi sukses
         // Redirect to dashboard after successful profile setup
-        router.push("/dashboard");
+        router.push("/");
       } else {
         throw new Error(result.error || "Gagal memperbarui profil.");
       }
@@ -154,180 +152,192 @@ export default function App() {
 
   return (
     <div className=" bg-green-100">
-    <div className="max-w-2xl mx-auto p-8 bg-white/90 backdrop-blur-lg shadow-2xl rounded-3xl font-[Inter] border border-gray-100">
-      <h1 className="text-3xl font-extrabold mb-8 text-gray-900 text-center tracking-tight">
-        Atur Profil Anda
-      </h1>
-
-      {/* Notifikasi Sukses/Error */}
-      {error && (
-        <div
-          className={`p-3 mb-6 text-sm rounded-lg border ${
-            error.startsWith("Profil berhasil")
-              ? "text-green-700 bg-green-50 border-green-200"
-              : "text-red-700 bg-red-50 border-red-200"
-          }`}
-          role="alert"
-        >
-          {error}
-        </div>
-      )}
-
-      <form className="space-y-6" onSubmit={handleSubmit}>
-        {/* Username */}
-        <div>
-          <label
-            htmlFor="username"
-            className="block text-sm font-semibold text-gray-800 mb-2"
-          >
-            Username<span className="text-red-500">*</span>
-          </label>
-          <div className="relative">
-            <User
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500"
-              size={18}
-            />
-            <input
-              type="text"
-              name="username"
-              id="username"
-              required
-              value={profileData.username}
-              onChange={handleInputChange}
-              placeholder="Masukkan nama pengguna"
-              className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+      <div className="max-w-2xl mx-auto p-8 bg-white/90 backdrop-blur-lg shadow-2xl rounded-3xl font-[Inter] border border-gray-100">
+        <div className="text-center mb-8">
+          <div className="mx-auto w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center mb-4">
+            <Image
+              src="/favicon.png"
+              alt="Nandur Icon"
+              width={32}
+              height={32}
+              className="rounded-2xl"
             />
           </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            Silahkan lengkapi profil Anda
+          </h1>
+          <p className="text-gray-600"></p>
         </div>
 
-        {/* Bio */}
-        <div>
-          <label
-            htmlFor="bio"
-            className="block text-sm font-semibold text-gray-800 mb-2"
+        {/* Notifikasi Sukses/Error */}
+        {error && (
+          <div
+            className={`p-3 mb-6 text-sm rounded-lg border ${
+              error.startsWith("Profil berhasil")
+                ? "text-green-700 bg-green-50 border-green-200"
+                : "text-red-700 bg-red-50 border-red-200"
+            }`}
+            role="alert"
           >
-            Bio
-          </label>
-          <textarea
-            name="bio"
-            id="bio"
-            value={profileData.bio}
-            onChange={handleInputChange}
-            placeholder="Ceritakan tentang diri Anda"
-            rows={3}
-            className="w-full px-3 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all resize-none"
-          ></textarea>
-        </div>
-
-        {/* Nomor Telepon */}
-        <div>
-          <label
-            htmlFor="numberPhone"
-            className="block text-sm font-semibold text-gray-800 mb-2"
-          >
-            Nomor Telepon
-          </label>
-          <div className="relative">
-            <Phone
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500"
-              size={18}
-            />
-            <input
-              type="text"
-              name="numberPhone"
-              id="numberPhone"
-              value={profileData.numberPhone}
-              onChange={handleInputChange}
-              placeholder="Masukkan nomor telepon"
-              className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-            />
+            {error}
           </div>
-        </div>
+        )}
 
-        {/* Lokasi */}
-        <div>
-          <label
-            htmlFor="lokasi"
-            className="block text-sm font-semibold text-gray-800 mb-2"
-          >
-            Lokasi
-          </label>
-          <div className="relative">
-            <MapPin
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500"
-              size={18}
-            />
-            <input
-              type="text"
-              name="lokasi"
-              id="lokasi"
-              value={profileData.lokasi}
-              onChange={handleInputChange}
-              placeholder="Masukkan lokasi Anda"
-              className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-            />
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* Username */}
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-sm font-semibold text-gray-800 mb-2"
+            >
+              Username<span className="text-red-500">*</span>
+            </label>
+            <div className="relative">
+              <User
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500"
+                size={18}
+              />
+              <input
+                type="text"
+                name="username"
+                id="username"
+                required
+                value={profileData.username}
+                onChange={handleInputChange}
+                placeholder="Masukkan nama pengguna"
+                className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Foto Profil */}
-        <div>
-          <label className="block text-sm font-semibold text-gray-800 mb-2">
-            Foto Profil
-          </label>
-          <FileDropzone
-            onFilesDrop={handleFileDrop}
-            accept="image/*"
-            multiple={false}
-            id="profile-image-dropzone"
-          />
+          {/* Bio */}
+          <div>
+            <label
+              htmlFor="bio"
+              className="block text-sm font-semibold text-gray-800 mb-2"
+            >
+              Bio
+            </label>
+            <textarea
+              name="bio"
+              id="bio"
+              value={profileData.bio}
+              onChange={handleInputChange}
+              placeholder="Ceritakan tentang diri Anda"
+              rows={3}
+              className="w-full px-3 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all resize-none"
+            ></textarea>
+          </div>
 
-          {/* Preview Image */}
-          <div className="mt-6 relative w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-green-200 bg-gray-100 shadow-inner">
-            {previewImage || profileData.image ? (
-              <div className="relative w-full h-full">
-                <img
-                  src={previewImage || profileData.image}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={handleRemoveImage}
-                  className="absolute top-3 right-3 bg-white/90 hover:bg-red-500 rounded-full p-1.5 shadow-lg border border-gray-200 hover:border-red-600 transition-all group"
-                  aria-label="Hapus gambar"
-                >
-                  <Trash2
-                    className="text-red-500 group-hover:text-white"
-                    size={16}
+          {/* Nomor Telepon */}
+          <div>
+            <label
+              htmlFor="numberPhone"
+              className="block text-sm font-semibold text-gray-800 mb-2"
+            >
+              Nomor Telepon
+            </label>
+            <div className="relative">
+              <Phone
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500"
+                size={18}
+              />
+              <input
+                type="text"
+                name="numberPhone"
+                id="numberPhone"
+                value={profileData.numberPhone}
+                onChange={handleInputChange}
+                placeholder="Masukkan nomor telepon"
+                className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Lokasi */}
+          <div>
+            <label
+              htmlFor="lokasi"
+              className="block text-sm font-semibold text-gray-800 mb-2"
+            >
+              Lokasi
+            </label>
+            <div className="relative">
+              <MapPin
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-green-500"
+                size={18}
+              />
+              <input
+                type="text"
+                name="lokasi"
+                id="lokasi"
+                value={profileData.lokasi}
+                onChange={handleInputChange}
+                placeholder="Masukkan lokasi Anda"
+                className="w-full pl-10 pr-3 py-3 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Foto Profil */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-800 mb-2">
+              Foto Profil
+            </label>
+            <FileDropzone
+              onFilesDrop={handleFileDrop}
+              accept="image/*"
+              multiple={false}
+              id="profile-image-dropzone"
+            />
+
+            {/* Preview Image */}
+            <div className="mt-6 relative w-32 h-32 mx-auto rounded-full overflow-hidden border-4 border-green-200 bg-gray-100 shadow-inner">
+              {previewImage || profileData.image ? (
+                <div className="relative w-full h-full">
+                  <img
+                    src={previewImage || profileData.image}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
                   />
-                </button>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400">
-                <ImageIcon size={36} />
-                <span className="text-xs mt-1">Tidak ada gambar</span>
-              </div>
-            )}
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="absolute top-3 right-3 bg-white/90 hover:bg-red-500 rounded-full p-1.5 shadow-lg border border-gray-200 hover:border-red-600 transition-all group"
+                    aria-label="Hapus gambar"
+                  >
+                    <Trash2
+                      className="text-red-500 group-hover:text-white"
+                      size={16}
+                    />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-gray-400">
+                  <ImageIcon size={36} />
+                  <span className="text-xs mt-1">Tidak ada gambar</span>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full flex justify-center items-center gap-2 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold text-lg hover:bg-green-700 active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-green-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-md"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="animate-spin" size={20} />
-              Menyimpan...
-            </>
-          ) : (
-            "Simpan Profil"
-          )}
-        </button>
-      </form>
-    </div>
+          {/* Submit */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full flex justify-center items-center gap-2 bg-green-600 text-white py-3 px-4 rounded-xl font-semibold text-lg hover:bg-green-700 active:scale-[0.99] focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-green-400 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-md"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Menyimpan...
+              </>
+            ) : (
+              "Simpan Profil"
+            )}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

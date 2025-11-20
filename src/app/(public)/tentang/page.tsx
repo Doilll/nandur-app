@@ -7,13 +7,20 @@ import {
   TrendingUp,
   ArrowRight,
   Image as ImageIcon,
-  MessageCircle,
   Globe,
 } from "lucide-react";
 import Link from "next/link";
 import FeatureCard from "@/components/FeatureCard";
 import ValueCard from "@/components/ValueCard";
 import StepCard from "@/components/StepCard";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Tentang Nandur",
+  description: "Informasi tentang platform Nandur",
+};
+
+
 
 export default function TentangPage() {
   return (

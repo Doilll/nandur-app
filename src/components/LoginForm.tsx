@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/router";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -12,6 +13,7 @@ export default function LoginForm() {
     password: "",
     rememberMe: false,
   });
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,7 +24,7 @@ export default function LoginForm() {
         email: dataForm.email,
         password: dataForm.password,
         rememberMe: dataForm.rememberMe,
-        callbackURL: "/dashboard",
+        callbackURL: "/",
       });
 
       // handle expected error response shape
@@ -31,6 +33,8 @@ export default function LoginForm() {
         setIsLoading(false);
         return;
       }
+
+      router.push("/");
 
       // fallback: stop loading
       setIsLoading(false);
@@ -46,7 +50,7 @@ export default function LoginForm() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: "/dashboard",
+        callbackURL: "/",
         newUserCallbackURL: "/setup-profile",
       });
     } catch (error) {

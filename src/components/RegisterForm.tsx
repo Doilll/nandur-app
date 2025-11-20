@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/router";
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -13,6 +14,8 @@ export default function RegisterForm() {
     email: "",
     password: "",
   });
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,6 +37,7 @@ export default function RegisterForm() {
       }
 
       // fallback: stop loading
+      router.push("/setup-profile");
       setIsLoading(false);
     } catch (error) {
       console.error("Error during Sign Up:", error);
@@ -47,7 +51,7 @@ export default function RegisterForm() {
     try {
       await authClient.signIn.social({
         provider,
-        callbackURL: "/dashboard",
+        callbackURL: "/",
         newUserCallbackURL: "/setup-profile",
       });
     } catch (error) {
