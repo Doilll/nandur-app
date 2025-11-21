@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import { User, Phone, MapPin, Trash2, ImageIcon, Loader2 } from "lucide-react";
 import FileDropzone from "@/components/FileDropZone";
 import { useRouter } from "next/navigation";
@@ -31,12 +31,29 @@ export default function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const {data: session, isPending} = authClient.useSession();
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.replace("/login");
+    }
+  }, [isPending, session, router]);
+
+  if (isPending) {
+    return null;
+  }
+  if (!session) {
+    return null;
+  }
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
     // Pengetikan memastikan 'name' sesuai dengan key di ProfileData
+    if (name === "username") {
+      value = value.toLowerCase().replace(/\s+/g, "");
+    }
     setProfileData((prevData) => ({
       ...prevData,
       [name]: value,

@@ -54,6 +54,14 @@ export default function Footer() {
                   Petani
                 </Link>
               </li>
+              <li>
+                <Link
+                  href="/feed"
+                  className="hover:text-white transition-colors"
+                >
+                  Komunitas
+                </Link>
+              </li>
             </ul>
           </div>
           <div>
