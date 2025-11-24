@@ -10,7 +10,7 @@ interface ProyekData {
   namaProyek: string;
   deskripsi: string;
   lokasi: string;
-  image: string;
+  image: string | null;
 }
 
 interface TambahProyekFormProps {

@@ -19,8 +19,13 @@ import TabButton from "@/components/TabButton";
 import StatItem from "@/components/StatItem";
 import ContactItem from "@/components/ContactItem";
 import ShareButton from "@/components/ShareButton";
+import PetaniTabs from "@/components/PetaniTabs";
 
-export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}) {
   const { username } = await params;
 
   const user = await prisma.user.findUnique({
@@ -29,13 +34,13 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
       name: true,
       username: true,
       bio: true,
-      image: true
-    }
+      image: true,
+    },
   });
 
   if (!user) {
     return {
-      title: "Petani Tidak Ditemukan - Tandur"
+      title: "Petani Tidak Ditemukan - Tandur",
     };
   }
 
@@ -49,7 +54,6 @@ export async function generateMetadata({ params }: { params: Promise<{ username:
     },
   };
 }
-
 
 export default async function ProfilLayout({
   children,
@@ -180,27 +184,7 @@ export default async function ProfilLayout({
       {/* Tab Navigation */}
       <section className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8 overflow-x-auto">
-            <TabButton
-              href={`/petani/${username}`}
-              icon={<Sprout className="h-5 w-5" />}
-              label="Proyek"
-              count={petani.proyekTani.length}
-              isDefault
-            />
-            <TabButton
-              href={`/petani/${username}/produk`}
-              icon={<Package className="h-5 w-5" />}
-              label="Produk"
-              count={petani.produks.length}
-            />
-            <TabButton
-              href={`/petani/${username}/feed`}
-              icon={<Rss className="h-5 w-5" />}
-              label="Feed"
-              count={petani.feeds.length}
-            />
-          </div>
+          <PetaniTabs username={username} />
         </div>
       </section>
 

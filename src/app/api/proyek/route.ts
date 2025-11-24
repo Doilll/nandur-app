@@ -26,7 +26,7 @@ export async function POST(req: Request): Promise<NextResponse> {
         deskripsi,
         lokasi,
         petaniId: user.id,
-        image,
+        image
       },
     });
     return NextResponse.json(

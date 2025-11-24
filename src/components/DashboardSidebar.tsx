@@ -5,7 +5,6 @@ import {
   Sprout,
   Package,
   MessageSquare,
-  BarChart3,
   Settings,
   LogOut,
   User,

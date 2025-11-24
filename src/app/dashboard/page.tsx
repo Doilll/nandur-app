@@ -390,7 +390,7 @@ export default async function DashboardOverview() {
                   <Sprout className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                   <p className="text-gray-500 mb-4">Belum ada proyek</p>
                   <Link
-                    href="/dashboard/proyek/tambah"
+                    href="/dashboard/proyek"
                     className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-xl font-medium transition-colors"
                   >
                     <Sprout className="w-4 h-4" />
@@ -496,7 +496,7 @@ export default async function DashboardOverview() {
           <h2 className="text-xl font-bold text-gray-900 mb-6">Aksi Cepat</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Link
-              href="/dashboard/proyek/tambah"
+              href="/dashboard/proyek"
               className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50/50 transition-all duration-200 group"
             >
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center group-hover:bg-green-200 transition-colors">
@@ -524,7 +524,7 @@ export default async function DashboardOverview() {
             </Link>
 
             <Link
-              href="/dashboard/feeds/tambah"
+              href="/dashboard/feed"
               className="flex items-center gap-4 p-4 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50/50 transition-all duration-200 group"
             >
               <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center group-hover:bg-orange-200 transition-colors">

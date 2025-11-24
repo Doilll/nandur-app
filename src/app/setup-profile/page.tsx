@@ -31,7 +31,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const {data: session, isPending} = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -50,10 +50,35 @@ export default function App() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     let { name, value } = e.target;
-    // Pengetikan memastikan 'name' sesuai dengan key di ProfileData
     if (name === "username") {
-      value = value.toLowerCase().replace(/\s+/g, "");
+      value = value
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]/g, "") // hapus simbol aneh
+        .replace(/-{2,}/g, "-") // ----- -> -
+        .replace(/_{2,}/g, "_") // _____ -> _
+        .replace(/^[-_]+/g, ""); // hapus _ atau - di AWAL saja
     }
+
+    if (name === "numberPhone") {
+      // hanya izinkan angka 0–9
+      value = value.replace(/[^0-9]/g, "");
+    }
+
+    if (name === "bio") {
+      value = value
+        .replace(/<[^>]*>/g, "") // prevent HTML injection
+        .replace(/\s+/g, " ") // normalize whitespace
+        .trim()
+        .slice(0, 250); // limit 250 chars
+    }
+
+    if (name === "lokasi") {
+      value = value
+        .replace(/[\u0000-\u001F\u007F]/g, "") // remove control chars
+        .trim()
+        .slice(0, 80);
+    }
+
     setProfileData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -156,10 +181,10 @@ export default function App() {
         await authClient.updateUser({
           image: finalImageUrl,
           username: submissionData.username,
-        })
+        });
         router.push("/");
       } else {
-        toast.error(result.error || "Gagal memperbarui profil.")
+        toast.error(result.error || "Gagal memperbarui profil.");
         throw new Error(result.error || "Gagal memperbarui profil.");
       }
     } catch (err) {

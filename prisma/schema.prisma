@@ -37,7 +37,7 @@ model ProyekTani {
   deskripsi  String
   petaniId   String
   lokasi     String
-  image      String
+  image      String?
   status     ProyekStatus @default(PERSIAPAN)
   petani     User         @relation(fields: [petaniId], references: [id], onDelete: Cascade)
   faseProyek FaseProyek[]

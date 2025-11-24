@@ -14,15 +14,17 @@ import FeatureCard from "@/components/FeatureCard";
 import ValueCard from "@/components/ValueCard";
 import StepCard from "@/components/StepCard";
 import type { Metadata } from "next";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Tentang Nandur",
   description: "Informasi tentang platform Nandur",
 };
 
+export default async function TentangPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
 
-
-export default function TentangPage() {
   return (
     <div className="min-h-screen bg-linear-to-b from-green-50 to-white">
       {/* Why Section */}
@@ -235,33 +237,35 @@ export default function TentangPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-linear-to-br from-green-600 to-emerald-700 text-white">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold mb-6">
-            Ready to Join the Revolution?
-          </h2>
-          <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
-            Gabung dengan ratusan petani yang udah transformasi cara bertani
-            mereka. Dari traditional farming ke smart farming dengan Nandur.
-          </p>
+      {!session && (
+        <section className="py-20 bg-linear-to-br from-green-600 to-emerald-700 text-white">
+          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 className="text-4xl font-bold mb-6">
+              Ready to Join the Revolution?
+            </h2>
+            <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
+              Gabung dengan ratusan petani yang udah transformasi cara bertani
+              mereka. Dari traditional farming ke smart farming dengan Nandur.
+            </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Link
-              href="/register"
-              className="bg-white text-green-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-50 transition-all transform hover:scale-105 shadow-2xl flex items-center space-x-2"
-            >
-              <span>Daftar Sekarang</span>
-              <ArrowRight className="h-5 w-5" />
-            </Link>
-            <Link
-              href="/petani"
-              className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-green-600 transition-all"
-            >
-              Lihat Katalog Petani
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                href="/register"
+                className="bg-white text-green-600 px-8 py-4 rounded-full font-semibold text-lg hover:bg-green-50 transition-all transform hover:scale-105 shadow-2xl flex items-center space-x-2"
+              >
+                <span>Daftar Sekarang</span>
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+              <Link
+                href="/petani"
+                className="border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-green-600 transition-all"
+              >
+                Lihat Katalog Petani
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }

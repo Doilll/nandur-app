@@ -10,15 +10,20 @@ interface ProjectCardProps {
   id: string;
   namaProyek: string;
   deskripsi: string;
-  image: string;
+  image: string | null;
   lokasi: string;
   createdAt: Date;
   status: ProyekStatus;
-  faseProyek: { id: string; status: FaseStatus; namaFase: string; }[];
+  faseProyek: { id: string; status: FaseStatus; namaFase: string }[];
 }
 
-
-export default function ProjectCard({ proyek, forDashboard }: { proyek: ProjectCardProps, forDashboard?: boolean }) {
+export default function ProjectCard({
+  proyek,
+  forDashboard,
+}: {
+  proyek: ProjectCardProps;
+  forDashboard?: boolean;
+}) {
   const statusColors = {
     PERSIAPAN: "bg-yellow-100 text-yellow-800",
     PENANAMAN: "bg-blue-100 text-blue-800",
@@ -34,10 +39,14 @@ export default function ProjectCard({ proyek, forDashboard }: { proyek: ProjectC
   const progress = totalPhases > 0 ? (completedPhases / totalPhases) * 100 : 0;
 
   return (
-    <Link href={forDashboard ? `/dashboard/proyek/${proyek.id}` : `/proyek/${proyek.id}`}>
+    <Link
+      href={
+        forDashboard ? `/dashboard/proyek/${proyek.id}` : `/proyek/${proyek.id}`
+      }
+    >
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-300">
         {/* Gambar Proyek */}
-        {proyek.image && (
+        {proyek.image ? (
           <div className="relative w-full h-48">
             <Image
               src={proyek.image}
@@ -45,7 +54,16 @@ export default function ProjectCard({ proyek, forDashboard }: { proyek: ProjectC
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 33vw"
-              priority
+            />
+          </div>
+        ) : (
+          <div className="relative w-full h-48">
+            <Image
+              src="/default-image-projek.png"
+              alt={proyek.namaProyek}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 33vw"
             />
           </div>
         )}

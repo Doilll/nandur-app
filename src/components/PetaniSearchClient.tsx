@@ -188,7 +188,7 @@ export default function PetaniSearchClient({
                   name={p.name}
                   username={p.username || "Username tidak diketahui"}
                   lokasi={p.lokasi || "Lokasi tidak diketahui"}
-                  image={p.image || "/default-avatar.png"}
+                  image={p.image || "/chicken.png"}
                   totalProyek={p._count.proyekTani}
                   totalProduk={p._count.produks}
                 />

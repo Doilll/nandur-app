@@ -2,7 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { Metadata } from "next";
-import { Search, Users, BookCheck, BadgeCheck } from "lucide-react";
+import { Users, BookCheck, BadgeCheck } from "lucide-react";
 import PetaniSearchClient from "@/components/PetaniSearchClient";
 
 interface Petani {

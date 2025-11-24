@@ -21,6 +21,12 @@ export default async function FeedPage({
           content: true,
           createdAt: true,
           imageFeed: true,
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",

@@ -49,7 +49,7 @@ export default async function LandingPage() {
                 </div>
                 <div>
                   <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-                    Selamat Datang Kembali, {session.user.name || "Petani"}! 👋
+                    Selamat Datang Kembali, {session.user.name || "Petani"}!
                   </h1>
                   <p className="text-gray-600 mt-1">
                     Mari lanjutkan perjalanan pertanian Anda

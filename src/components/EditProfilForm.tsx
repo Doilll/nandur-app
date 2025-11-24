@@ -37,7 +37,35 @@ export default function EditProfilForm({ user }: EditProfilFormProps) {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    if (name === "numberPhone") {
+      // hanya izinkan angka 0–9
+      value = value.replace(/[^0-9]/g, "");
+    }
+    if (name === "bio") {
+      value = value
+        .replace(/<[^>]*>/g, "") // prevent HTML injection
+        .replace(/\s+/g, " ") // normalize whitespace
+        .trim()
+        .slice(0, 250); // limit 250 chars
+    }
+
+    if (name === "name") {
+      value = value
+        .replace(/[^a-zA-Z0-9 _-]/g, "") // allow: huruf, angka, spasi, -, _
+        .replace(/\s{2,}/g, " ") // double space -> 1 space
+        .trim()
+        .slice(0, 50);
+    }
+
+    if (name === "lokasi") {
+      value = value
+        .replace(/<[^>]*>/g, "") // prevent XSS
+        .replace(/[\u0000-\u001F\u007F]/g, "") // remove control chars
+        .trim()
+        .slice(0, 80);
+    }
+
     setProfileData((prev) => ({ ...prev, [name]: value }));
   };
 
@@ -110,7 +138,7 @@ export default function EditProfilForm({ user }: EditProfilFormProps) {
         image: finalImage,
         name: payload.name,
       });
-      
+
       setProfileData((prev) => ({ ...prev, image: finalImage }));
       setNotif("Profil berhasil diperbarui!");
       toast.success("Profil berhasil diperbarui!");

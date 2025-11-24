@@ -152,12 +152,18 @@ export default async function ProdukDetailPage({
                 >
                   <div className="flex items-center gap-4">
                     <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-gray-100">
-                      <Image
-                        src={produk.proyekTani.image}
-                        alt={produk.proyekTani.namaProyek}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform"
-                      />
+                      {produk.proyekTani.image?.trim() ? (
+                        <Image
+                          src={produk.proyekTani.image}
+                          alt={produk.proyekTani.namaProyek}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                          <Package className="w-10 h-10 text-green-600" />
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1">
                       <h4 className="font-semibold text-gray-900 group-hover:text-green-600 transition-colors">
