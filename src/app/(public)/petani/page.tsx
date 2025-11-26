@@ -38,7 +38,9 @@ export default async function KatalogPetaniPage({ searchParams }: KatalogPetaniP
   const page = Number(params.page) || 1;
   const limit = 12;
   // Fetch initial data on server
-  const whereClause = search
+  const whereClause: Prisma.UserWhereInput = {
+  username: { not: null, notIn: [""] }, // hide user tanpa username
+  ...(search
     ? {
         OR: [
           { name: { contains: search, mode: Prisma.QueryMode.insensitive } },
@@ -46,7 +48,9 @@ export default async function KatalogPetaniPage({ searchParams }: KatalogPetaniP
           { lokasi: { contains: search, mode: Prisma.QueryMode.insensitive } },
         ],
       }
-    : {};
+    : {}),
+};
+
 
   const [petani, total] = await Promise.all([
     prisma.user.findMany({
