@@ -24,7 +24,7 @@ export default function ToggleLikeButton({
 
   const toggleLike = async () => {
     if (!isAuthenticated) {
-      toast.error("Login Diperlukan",{
+      toast.error("Login Diperlukan", {
         description: "Silakan login untuk memberikan like",
       });
       return;
@@ -32,7 +32,7 @@ export default function ToggleLikeButton({
 
     const newLiked = !liked;
     const newCount = newLiked ? count + 1 : count - 1;
-    
+
     setLiked(newLiked);
     setCount(newCount);
 
@@ -45,14 +45,26 @@ export default function ToggleLikeButton({
         if (!res.ok) {
           setLiked(!newLiked);
           setCount(newLiked ? newCount - 1 : newCount + 1);
-          toast.error("Gagal terjadi kesalahan",{
+          toast.error("Gagal terjadi kesalahan", {
             description: "Gagal memberikan like",
           });
+        }
+
+        if (res.ok) {
+          if (newLiked) {
+            toast.success("Berhasil Like", {
+              description: "Kamu menyukai postingan ini",
+            });
+          } else {
+            toast.error("Berhasil Unlike", {
+              description: "Kamu batal menyukai postingan ini",
+            });
+          }
         }
       } catch (error) {
         setLiked(!newLiked);
         setCount(newLiked ? newCount - 1 : newCount + 1);
-        toast.error("Error",{
+        toast.error("Error", {
           description: "Terjadi kesalahan jaringan",
         });
       }
@@ -67,14 +79,14 @@ export default function ToggleLikeButton({
     >
       <Heart
         className={`w-5 h-5 transition ${
-          liked 
-            ? "fill-red-500 text-red-500" 
+          liked
+            ? "fill-red-500 text-red-500"
             : "text-gray-500 hover:text-red-500"
         }`}
       />
-      <span className={`font-medium ${
-        liked ? "text-red-600" : "text-gray-600"
-      }`}>
+      <span
+        className={`font-medium ${liked ? "text-red-600" : "text-gray-600"}`}
+      >
         {count}
       </span>
     </button>

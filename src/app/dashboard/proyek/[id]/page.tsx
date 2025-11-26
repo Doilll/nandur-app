@@ -522,7 +522,7 @@ export default function ProjectDetailPage() {
                 <ActionButton
                   href={`/dashboard/proyek/${id}/update`}
                   icon={<Edit3 className="h-4 w-4" />}
-                  text="Update Progress"
+                  text="Edit Data Proyek"
                   color="green"
                 />
                 <Dialog>
@@ -547,7 +547,7 @@ export default function ProjectDetailPage() {
                       Apakah kamu yakin ingin menghapus proyek{" "}
                       <span className="font-semibold">{proyek.namaProyek}</span>
                       ?<br />
-                      Tindakan ini tidak dapat dibatalkan.
+                      Tindakan ini tidak dapat dibatalkan dan produk dari proyek akan terhapus juga.
                     </p>
 
                     <div className="flex justify-end gap-3 mt-5">

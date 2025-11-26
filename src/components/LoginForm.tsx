@@ -150,15 +150,6 @@ export default function LoginForm() {
               Ingat saya
             </label>
           </div>
-
-          <div className="text-sm">
-            <a
-              href="/auth/forgot-password"
-              className="text-green-600 hover:text-green-700 font-medium"
-            >
-              Lupa password?
-            </a>
-          </div>
         </div>
 
         <button

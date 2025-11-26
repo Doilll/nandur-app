@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Trash2, ImageIcon, DollarSign, Package } from "lucide-react";
 import FileDropzone from "./FileDropZone";
 import { StatusProduk } from "@prisma/client";
+import { toast } from "sonner";
 
 
 interface EditProdukFormProps {
@@ -190,6 +191,7 @@ export default function EditProdukForm({ produkId, produk }: EditProdukFormProps
       setPreviewImages([]);
       
       setSuccess("✅ Produk berhasil diupdate!");
+      toast.success("Produk berhasil diupdate!");
       
       // Redirect setelah sukses
       setTimeout(() => {

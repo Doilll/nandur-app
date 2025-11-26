@@ -123,16 +123,6 @@ export default async function ProdukDetailPage({
   return (
     <div className="min-h-screen bg-linear-to-b from-white to-green-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation */}
-        <div className="mb-8">
-          <Link
-            href={`/petani/${produk.petani.username}`}
-            className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span>Kembali ke Profil Petani</span>
-          </Link>
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Gallery */}

@@ -143,16 +143,6 @@ export default async function FeedDetailPage({ params }: FeedDetailPageProps) {
   return (
     <div className="min-h-screen bg-linear-to-b from-green-50 to-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation */}
-        <div className="mb-6">
-          <Link 
-            href="/feed"
-            className="inline-flex items-center gap-2 text-green-600 hover:text-green-700 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Kembali ke Feed
-          </Link>
-        </div>
 
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
           {/* Feed Header */}

@@ -153,20 +153,8 @@ export default async function DetailProyekPage({
       <section className="relative bg-linear-to-br from-green-600 via-emerald-600 to-teal-700 text-white overflow-hidden">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex justify-between items-center py-5">
-            <Link
-              href={`/petani/${proyek.petani.username}`}
-              className="flex items-center space-x-2 group"
-            >
-              <ArrowLeft className="h-5 w-5 text-green-100 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-lg font-semibold text-green-100">
-                Kembali
-              </span>
-            </Link>
 
             <div className="flex items-center space-x-4">
-              <button className="p-2 hover:bg-red-500 rounded-lg transition-colors">
-                <Heart className="h-5 w-5 text-green-100" />
-              </button>
               <ShareButton 
                 text="share projek ini" 
                 className="text-green-100 hover:text-green-900 hover:bg-green-50" 

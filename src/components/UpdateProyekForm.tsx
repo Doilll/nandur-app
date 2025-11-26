@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Leaf, MapPin, Trash2, ImageIcon, Loader2 } from "lucide-react";
 import FileDropzone from "./FileDropZone";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface ProyekData {
   id: string;
@@ -173,6 +174,7 @@ export default function UpdateProyekForm({
       setPreviewImage(finalImageUrl);
       setPendingFile(null);
       setSuccess("Proyek berhasil diperbarui!");
+      toast.success("Proyek berhasil diperbarui!");
       
       // Redirect atau panggil callback sukses
       setTimeout(() => {

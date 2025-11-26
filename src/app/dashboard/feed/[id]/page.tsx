@@ -41,16 +41,10 @@ export default async function FeedDetailDashboard({
           namaProyek: true 
         } 
       },
-      comments: { 
-        include: { 
-          author: { 
-            select: { 
-              name: true,
-              image: true
-            } 
-          } 
-        },
-        orderBy: { createdAt: 'asc' }
+      _count: {
+        select: {
+          comments: true
+        }
       },
       likes: { 
         include: { 
@@ -116,7 +110,7 @@ export default async function FeedDetailDashboard({
                       alt={feed.author.name}
                       width={40}
                       height={40}
-                      className="rounded-full"
+                      className="rounded-full w-10 h-10"
                     />
                   ) : (
                     <User className="w-5 h-5 text-green-600" />
@@ -171,10 +165,10 @@ export default async function FeedDetailDashboard({
                   <Heart className="w-5 h-5 text-red-500" />
                   <span>{feed.likes.length} Likes</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <Link href={`/feed/${feed.id}`} className="flex items-center gap-2">
                   <MessageCircle className="w-5 h-5 text-blue-500" />
-                  <span>{feed.comments.length} Komentar</span>
-                </div>
+                  <span>{feed._count.comments} Komentar</span>
+                </Link>
               </div>
             </div>
 
@@ -204,52 +198,6 @@ export default async function FeedDetailDashboard({
                       <span className="text-sm font-medium text-gray-900">
                         {like.user.name}
                       </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Comments Section */}
-            {feed.comments.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <MessageCircle className="w-5 h-5 text-blue-500" />
-                  Komentar ({feed.comments.length})
-                </h3>
-                <div className="space-y-4">
-                  {feed.comments.map((comment) => (
-                    <div key={comment.id} className="flex gap-3">
-                      <div className="shrink-0">
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                          {comment.author.image ? (
-                            <Image
-                              src={comment.author.image}
-                              alt={comment.author.name}
-                              width={32}
-                              height={32}
-                              className="rounded-full"
-                            />
-                          ) : (
-                            <User className="w-4 h-4 text-blue-600" />
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="bg-gray-50 rounded-2xl px-4 py-3">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-sm font-medium text-gray-900">
-                              {comment.author.name}
-                            </span>
-                            <span className="text-xs text-gray-500">
-                              {formatDate(comment.createdAt)}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-700">
-                            {comment.content}
-                          </p>
-                        </div>
-                      </div>
                     </div>
                   ))}
                 </div>

@@ -34,7 +34,9 @@ export default async function AuthLayout({
                 height={32}
                 className="rounded-full group-hover:scale-105 transition-transform"
               />
-              <span className="text-2xl font-bold text-black group-hover:text-green-700 transition-colors">Nandur</span>
+              <span className="text-2xl font-bold text-black group-hover:text-green-700 transition-colors">
+                Nandur
+              </span>
             </Link>
 
             {/* Auth Switch */}
@@ -65,58 +67,21 @@ export default async function AuthLayout({
             <div className="text-center mb-8">
               <div className="mx-auto w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center mb-4">
                 <Image
-                    src="/favicon.png"
-                    alt="Nandur Icon"
-                    width={32}
-                    height={32}
-                    className="rounded-2xl"
-                  />
+                  src="/favicon.png"
+                  alt="Nandur Icon"
+                  width={32}
+                  height={32}
+                  className="rounded-2xl"
+                />
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">
                 Selamat Datang di Nandur
               </h1>
-              <p className="text-gray-600">
-                Tempatnya Petani Tampil
-              </p>
+              <p className="text-gray-600">Tempatnya Petani Tampil</p>
             </div>
 
             {/* Auth Content */}
             {children}
-
-            {/* Additional Auth Options */}
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <div className="text-center">
-                <p className="text-sm text-gray-600">
-                  Dengan melanjutkan, Anda menyetujui{" "}
-                  <Link
-                    href="/terms"
-                    className="text-green-600 hover:text-green-700 font-medium"
-                  >
-                    Syarat & Ketentuan
-                  </Link>{" "}
-                  dan{" "}
-                  <Link
-                    href="/privacy"
-                    className="text-green-600 hover:text-green-700 font-medium"
-                  >
-                    Kebijakan Privasi
-                  </Link>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Support Section */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Butuh bantuan?{" "}
-              <Link
-                href="/support"
-                className="text-green-600 hover:text-green-700 font-medium"
-              >
-                Hubungi Tim Support
-              </Link>
-            </p>
           </div>
         </div>
       </main>

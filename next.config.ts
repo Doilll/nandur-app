@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: process.env.HOST_BLOB_URL!,
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com"
       }
     ],
   },

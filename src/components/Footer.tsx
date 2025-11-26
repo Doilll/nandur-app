@@ -23,8 +23,9 @@ export default function Footer() {
               <span className="text-xl font-bold">Nandur</span>
             </div>
             <p className="text-slate-400 max-w-md">
-              Menghubungkan petani lokal dengan konsumen untuk menciptakan
-              ekosistem pertanian yang lebih adil dan berkelanjutan.
+              Platform pertanian digital: dokumentasi proyek, marketplace
+              transparan, dan komunitas petani. Semua demi trust, akses pasar,
+              koneksi, dan harga yang lebih adil.
             </p>
           </div>
           <div>
@@ -67,8 +68,8 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Kontak</h3>
             <ul className="space-y-2 text-slate-400">
-              <li>Email: webnandur@gmail.com</li>
-              <li>Telepon: (+62) 821-4347-1111</li>
+              <li>Email: webtandur@gmail.com</li>
+              <li>Telepon: (+62) 822-3004-3685</li>
               <li>Alamat: Surabaya, Indonesia</li>
             </ul>
           </div>

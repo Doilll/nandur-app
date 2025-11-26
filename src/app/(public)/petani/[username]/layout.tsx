@@ -144,10 +144,15 @@ export default async function ProfilLayout({
                 label="Bagikan"
               />
 
-              <button className="bg-white text-green-700 hover:bg-green-50 px-6 py-3 rounded-full font-medium transition-all flex items-center space-x-2">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={`https://wa.me/${petani.numberPhone}`}
+                className="bg-white text-green-700 hover:bg-green-50 px-6 py-3 rounded-full font-medium transition-all flex items-center space-x-2"
+              >
                 <MessageCircle className="h-5 w-5" />
                 <span>Hubungi</span>
-              </button>
+              </a>
             </div>
           </div>
         </div>

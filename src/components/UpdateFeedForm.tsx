@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2, ImageIcon, Loader2, FileText, MapPin } from "lucide-react";
 import FileDropzone from "@/components/FileDropZone";
+import { toast } from "sonner";
+
 
 interface Project {
   id: string;
@@ -166,6 +168,7 @@ export default function UpdateFeedForm({ feed, userProjects }: UpdateFeedFormPro
       setPreviewImages([]);
       
       setSuccess("✅ Feed berhasil diupdate!");
+      toast.success("Feed berhasil diupdate!");
       
       // Refresh page after success
       setTimeout(() => {
