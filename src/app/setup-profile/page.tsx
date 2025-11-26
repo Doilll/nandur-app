@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { User, Phone, MapPin, Trash2, ImageIcon, Loader2 } from "lucide-react";
 import FileDropzone from "@/components/FileDropZone";
 import { useRouter } from "next/navigation";
