@@ -98,7 +98,7 @@ export default function RegisterForm() {
           >
             Email
           </label>
-          <div className="relative">
+            <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Mail className="h-5 w-5 text-gray-400" />
             </div>
@@ -109,13 +109,22 @@ export default function RegisterForm() {
               autoComplete="email"
               required
               value={dataForm.email}
-              onChange={(e) =>
-                setDataForm({ ...dataForm, email: e.target.value })
-              }
+              onChange={(e) => {
+              // hanya izinkan huruf, angka, underscore dan @
+              const filtered = e.target.value.replace(/[^A-Za-z0-9_@]/g, "");
+              setDataForm({ ...dataForm, email: filtered });
+              }}
+              onPaste={(e) => {
+              // pasting juga disaring
+              e.preventDefault();
+              const paste = (e.clipboardData || (window as any).clipboardData).getData("text");
+              const filtered = paste.replace(/[^A-Za-z0-9_@]/g, "");
+              setDataForm({ ...dataForm, email: filtered });
+              }}
               className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
               placeholder="masukkan email Anda"
             />
-          </div>
+            </div>
         </div>
 
         <div>
