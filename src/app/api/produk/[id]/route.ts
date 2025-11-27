@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { del } from "@vercel/blob";
 
 export async function GET(
   req: Request,
@@ -32,16 +33,11 @@ export async function GET(
 
 export async function DELETE(
   req: Request,
-  {
-    params,
-  }: {
-    params: Promise<{
-      id: string;
-    }>;
-  }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   const session = await auth.api.getSession({ headers: req.headers });
   const user = session?.user;
+
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -49,12 +45,39 @@ export async function DELETE(
   const { id } = await params;
 
   try {
-    const produk = await prisma.produk.delete({
-      where: {
-        id: id,
-      },
+    // 1. Ambil produk dulu sebelum dihapus
+    const existing = await prisma.produk.findUnique({
+      where: { id },
+      select: { gambarProduk: true }
     });
-    return NextResponse.json({ message: "Produk berhasil dihapus", produk });
+
+    if (!existing) {
+      return NextResponse.json({ error: "Produk tidak ditemukan" }, { status: 404 });
+    }
+
+    // 2. Hapus produk dari database
+    const deleted = await prisma.produk.delete({
+      where: { id },
+    });
+
+    // 3. Hapus gambar-gambar (kalau ada)
+    if (existing.gambarProduk?.length) {
+      await Promise.all(
+        existing.gambarProduk.map(async (imageUrl) => {
+          try {
+            await del(imageUrl);
+          } catch (error) {
+            console.error("Error deleting image:", error);
+          }
+        })
+      );
+    }
+
+    return NextResponse.json({
+      message: "Produk berhasil dihapus",
+      produk: deleted,
+    });
+
   } catch (error) {
     console.error("Error deleting produk:", error);
     return NextResponse.json(
@@ -63,6 +86,7 @@ export async function DELETE(
     );
   }
 }
+
 
 export async function PUT(
   req: Request,

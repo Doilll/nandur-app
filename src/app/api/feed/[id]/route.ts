@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { del } from "@vercel/blob";
 
 interface RouteParams {
   params: Promise<{
@@ -88,6 +89,18 @@ export async function DELETE(
 
     if (!existingFeed) {
       return NextResponse.json({ error: "Feed not found" }, { status: 404 });
+    }
+
+    if (existingFeed.imageFeed?.length) {
+      await Promise.all(
+        existingFeed.imageFeed.map(async (imageUrl) => {
+          try {
+            await del(imageUrl);
+          } catch (error) {
+            console.error("Error deleting image:", error);
+          }
+        })
+      )
     }
 
     await prisma.feed.delete({

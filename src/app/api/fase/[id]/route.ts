@@ -1,12 +1,17 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { del } from "@vercel/blob";
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{
-    id: string;
-  }> }
+  {
+    params,
+  }: {
+    params: Promise<{
+      id: string;
+    }>;
+  }
 ): Promise<NextResponse> {
   const { id } = await params;
   try {
@@ -30,9 +35,13 @@ export async function GET(
 
 export async function PUT(
   req: Request,
-  { params }: { params: Promise<{
-    id: string;
-  }> }
+  {
+    params,
+  }: {
+    params: Promise<{
+      id: string;
+    }>;
+  }
 ): Promise<NextResponse> {
   const { id } = await params;
   const session = await auth.api.getSession({ headers: req.headers });
@@ -83,9 +92,13 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{
-    id: string;
-  }> }
+  {
+    params,
+  }: {
+    params: Promise<{
+      id: string;
+    }>;
+  }
 ): Promise<NextResponse> {
   const { id } = await params;
 
@@ -96,9 +109,31 @@ export async function DELETE(
   }
 
   try {
+    const existingFaseProyek = await prisma.faseProyek.findUnique({
+      where: { id },
+      select: { gambarFase: true },
+    });
+    if (!existingFaseProyek) {
+      return NextResponse.json(
+        { error: "Fase proyek tidak ditemukan" },
+        { status: 404 }
+      );
+    }
+
     const deletedFaseProyek = await prisma.faseProyek.delete({
       where: { id },
     });
+    if (existingFaseProyek.gambarFase?.length) {
+      await Promise.all(
+        deletedFaseProyek.gambarFase.map(async (imageUrl) => {
+          try {
+            await del(imageUrl);
+          } catch (error) {
+            console.error("Error deleting image:", error);
+          }
+        })
+      );
+    }
     return NextResponse.json(
       {
         message: "Fase proyek berhasil dihapus",

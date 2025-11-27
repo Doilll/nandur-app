@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { del } from "@vercel/blob";
+
 
 export async function GET(
   req: Request,
@@ -83,9 +85,7 @@ export async function PUT(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: Promise<{
-    id: string;
-  }> }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   const { id } = await params;
 
@@ -95,14 +95,60 @@ export async function DELETE(
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
   try {
-    const deletedProyek = await prisma.proyekTani.delete({
+    // 1. Ambil semua relasi yang punya gambar
+    const proyek = await prisma.proyekTani.findUnique({
+      where: { id },
+      select: {
+        image: true,
+        faseProyek: { select: { gambarFase: true } },
+        produk: { select: { gambarProduk: true } },
+        feeds: { select: { imageFeed: true } },
+      },
+    });
+
+    if (!proyek) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+
+    // 2. Kumpulkan SEMUA URL gambar
+    const allImages: string[] = [];
+
+    if (proyek.image) allImages.push(proyek.image);
+
+    proyek.faseProyek.forEach(f => {
+      if (f.gambarFase.length) allImages.push(...f.gambarFase);
+    });
+
+    proyek.produk.forEach(p => {
+      if (p.gambarProduk.length) allImages.push(...p.gambarProduk);
+    });
+
+    proyek.feeds.forEach(f => {
+      if (f.imageFeed.length) allImages.push(...f.imageFeed);
+    });
+
+    // 3. Hapus proyek (cascade akan hapus fase, produk, feed)
+    const deleted = await prisma.proyekTani.delete({
       where: { id },
     });
-    return NextResponse.json(
-      { message: "Proyek berhasil dihapus", proyek: deletedProyek },
-      { status: 200 }
+
+    // 4. Hapus file2 di Vercel Blob
+    await Promise.all(
+      allImages.map(async (url) => {
+        try {
+          await del(url);
+        } catch (err) {
+          console.error("Gagal hapus file blob:", err);
+        }
+      })
     );
+
+    return NextResponse.json({
+      message: "Proyek & semua file terkait berhasil dihapus",
+      proyek: deleted,
+    });
   } catch (error) {
     console.error("Error deleting proyek:", error);
     return NextResponse.json(
@@ -111,3 +157,4 @@ export async function DELETE(
     );
   }
 }
+
