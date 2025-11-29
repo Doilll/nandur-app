@@ -26,12 +26,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/feed`,
-      lastModified: new Date(),
-      changeFrequency: "hourly",
-      priority: 0.6,
-    },
-    {
       url: `${baseUrl}/petani`,
       lastModified: new Date(),
       changeFrequency: "weekly",
@@ -57,25 +51,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: product.updatedAt,
     changeFrequency: "weekly",
     priority: 0.7,
-  }));
-
-  // Dynamic routes for feeds
-  const feeds = await prisma.feed.findMany({
-    select: {
-      id: true,
-      updatedAt: true,
-    },
-    take: 1000, // Limit to prevent too many URLs
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
-  const feedRoutes: MetadataRoute.Sitemap = feeds.map((feed) => ({
-    url: `${baseUrl}/feed/${feed.id}`,
-    lastModified: feed.updatedAt,
-    changeFrequency: "daily",
-    priority: 0.6,
   }));
 
   // Dynamic routes for farmers (petani)
@@ -123,7 +98,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticRoutes,
     ...productRoutes,
-    ...feedRoutes,
     ...farmerRoutes,
     ...projectRoutes,
   ];
