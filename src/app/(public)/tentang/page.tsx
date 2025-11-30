@@ -244,7 +244,7 @@ export default async function TentangPage() {
               Ready to Join the Revolution?
             </h2>
             <p className="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
-              Gabung dengan ratusan petani yang udah transformasi cara bertani
+              Gabung dengan petani yang udah transformasi cara bertani
               mereka. Dari traditional farming ke smart farming dengan Nandur.
             </p>
 

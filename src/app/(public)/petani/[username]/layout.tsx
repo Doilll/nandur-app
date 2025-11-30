@@ -257,9 +257,6 @@ export default async function ProfilLayout({
                   />
                 )}
               </div>
-              <button className="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors">
-                Kirim Pesan
-              </button>
             </div>
           </div>
         </div>

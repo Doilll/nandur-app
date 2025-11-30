@@ -59,7 +59,6 @@ export default function LandingPublic() {
             </Link>
           </div>
 
-          {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
