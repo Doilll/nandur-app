@@ -60,7 +60,7 @@ export default function LandingPublic() {
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-16 max-w-4xl mx-auto">
             <div className="text-center">
               <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
                 <Users className="h-12 w-12 text-green-600 mx-auto mb-4" />
@@ -81,18 +81,6 @@ export default function LandingPublic() {
                 </div>
                 <div className="text-gray-600">
                   Akses produk dengan asal-usul yang jelas
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <div className="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
-                <Leaf className="h-12 w-12 text-green-600 mx-auto mb-4" />
-                <div className="text-xl font-bold text-gray-900">
-                  Untuk Investor
-                </div>
-                <div className="text-gray-600">
-                  Pantau progres proyek secara transparan
                 </div>
               </div>
             </div>
