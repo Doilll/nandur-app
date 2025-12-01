@@ -14,6 +14,8 @@ import {
   AlertCircle
 } from "lucide-react";
 import FileDropzone from "./FileDropZone";
+import { toast } from "sonner";
+
 
 interface Fase {
   id: string;
@@ -142,6 +144,7 @@ export default function EditFaseForm({ fase }: EditFaseFormProps) {
       if (!res.ok) throw new Error(data.error || "Gagal memperbarui fase");
 
       setSuccess("✅ Fase berhasil diperbarui!");
+      toast.success("✅ Fase berhasil diperbarui!");
       
       // Clear pending files and previews after successful upload
       setPendingFiles([]);

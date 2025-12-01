@@ -195,7 +195,6 @@ export default function EditProdukForm({ produkId, produk }: EditProdukFormProps
       
       // Redirect setelah sukses
       setTimeout(() => {
-        router.push("/dashboard/produk");
         router.refresh();
       }, 1500);
 
