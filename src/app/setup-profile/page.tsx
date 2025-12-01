@@ -67,7 +67,6 @@ export default function App() {
     if (name === "bio") {
       value = value
         .replace(/<[^>]*>/g, "") // prevent HTML injection
-        .replace(/\s+/g, " ") // normalize whitespace
         .trim()
         .slice(0, 250); // limit 250 chars
     }
